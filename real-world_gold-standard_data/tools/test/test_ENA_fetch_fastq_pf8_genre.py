@@ -1,6 +1,7 @@
 import pytest
 from pathlib import Path
 from urllib.error import URLError
+import gzip
 from ..ENA_fetch_fastq_pf8_genre import parse_sample_ids, _build_ena_query, search_ena, _parse_ena_response, split_search_result_by_resource, _download_fastq_file, download_all_fastqs
 
 TEST_FILES_DIR = Path(__file__).parent.resolve() / 'test_data'
@@ -136,8 +137,17 @@ def test_download_all_fastqs(tmp_path):
     
     expected_manifest_path = tmp_path / 'manifest.csv'
     assert expected_manifest_path.exists(), 'a manifest file has been created'
+    with open(expected_manifest_path,'r') as f:
+        manifest_lines = list(f)
+        assert manifest_lines[0].startswith('sample,'), 'first line of manifest file starts with "sample" field and looks like csv'
+        assert manifest_lines[1].startswith('RCN15107,'), 'first line of manifest data starts with sample ID'
     
     expected_fastq_dir_path = tmp_path /  (name + '_fastq')
     assert expected_fastq_dir_path.exists(), 'a dir has been created for the FASTQ files'
+    expected_fastq_read1_path = expected_fastq_dir_path / 'ERR14392568_1.fastq.gz'
     
-    
+    with open(expected_fastq_read1_path, 'rb') as f:
+        assert f.read(2) == b'\x1f\x8b', 'the file is gzipped'
+    with gzip.open(expected_fastq_read1_path, 'rb') as f:
+        file_content = f.read()
+        assert file_content.decode("utf-8").startswith('@'), 'first line if FASTQ file starts with "@"'
