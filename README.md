@@ -26,7 +26,7 @@ For pipelines that are using amplicon sequencing data, we assume that the pipeli
 
 #### Approach for creating high-quality datasets
 In order to create the most high-quality datasets, we made use of that fact that some samples have been independently analysed by both projects and that the two projects use different sequencing technology and analysis pipelines to create genotype and resistance phenotype calls. 
-To make use of this overlap between the projects, the datasets provided are based on full agreement of results between Pf8 and GenRe Mekong. 
+To make use of this overlap between the projects, the datasets provided are based on full agreement of results between Pf8 and GenRe Mekong. Thus, every sample in teh final datasets have results that are confirmed by two independent sequencing and analysis methods.  
 
 #### Datasets provided
 1. Samples where all inferred drug resistance phenotypes that have been tested in both projects are identical: [Pf8-GenReMekong_concordant_phenotype_high_quality_samples.csv](real-world_gold-standard_data/Pf8-GenReMekong/Pf8-GenReMekong_concordant_phenotype_high_quality_samples.csv)
@@ -38,11 +38,13 @@ Full details on how these datasets were created from public sources is provided 
 For information about data access, please visit https://malariagen.github.io/parasite-data/pf8/Data_access.html
 
 #### How to use the datasets
-The three datasets are provided as comma-separated tables in [this](real-world_gold-standard_data/Pf8-GenReMekong/) folder. Most data fields are either directly taken from public data or are calculaderived from the public data fields as detailed in the accompanying [Jupyter notebook](real-world_gold-standard_data/Pf8-GenReMekong/pf8genre.ipynb). All of the changes to the data columns are limited to renaming columns or extracting values from columns, unchanged, into new columns to enable comparisons between Pf8 and GenRe Mekong data.  Data dictionaries that describe the original public data fields are identified and linked to in the Jupyter notebook.
+The three datasets are provided as comma-separated tables in [this](real-world_gold-standard_data/Pf8-GenReMekong/) folder. Most data fields are either directly taken from public data or are calculated from the public data fields as detailed in the accompanying [Jupyter notebook](real-world_gold-standard_data/Pf8-GenReMekong/pf8genre.ipynb). All of the changes to the data columns are limited to renaming columns or extracting values from columns, unchanged, into new columns to enable comparisons between Pf8 and GenRe Mekong data.  Data dictionaries that describe the original public data fields are identified and linked to in the Jupyter notebook.
 
 Each dataset has a column called 'sample', which contains the sample ID that is used in both projects, Pf8 and GenRe Mekong. This is the "primary key" of the data and it can be used to obtain raw sequencing data from public archives. 
 
 The sample ID can also be used to add more of the original metadata to the datasets, if required. For details on how to do this, consult the [data analysis guides for Pf8](https://malariagen.github.io/parasite-data/pf8/Data_access.html). Note that the sample ID column in the original Pf8 dataset is spelled with an upper case 'S', whereas the same data column is spelled with a lower case 's' in GenRe Mekong. 
+
+To retrieve the FASTQ files from both projects, a custom ENA data helper module is provided alongside the Jupyter notebook. The notebook uses this module to search ENA by sample ID and to add search results back into the sample data tables. At the end of the notebook, a section is provided that creates input files for FASTQ download and demonstrates the use of the ENA data helper on the commandline for the purpose of retrieving the FASTQ files along with a manifest file.  
 
 
 ### Simulated data
