@@ -447,6 +447,7 @@ def _download_fastq_file( remote_ftp_url:str, dir, num_tries:int=3, skip_errors:
     
     file_name = remote_ftp_url.split('/')[-1]
     local_path = pathlib.Path(dir) / file_name
+    local_path = local_path.resolve()
     
     attempt = 1
     last_error = None
