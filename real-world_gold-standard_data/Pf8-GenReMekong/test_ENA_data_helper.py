@@ -126,15 +126,15 @@ def test_download_all_fastqs(tmp_path):
     data = pd.DataFrame(
         {
             'run_accession': [
-                'ERR15625306',
-                'ERR15625307'],
+                'ERR14388605',
+                'ERR14388608'],
             'ftp_url_read_1': [
-                'ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR156/006/ERR15625306/ERR15625306_1.fastq.gz',
-                'ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR156/007/ERR15625307/ERR15625307_1.fastq.gz'
+                'ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR143/005/ERR14388605/ERR14388605_1.fastq.gz',
+                'ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR143/008/ERR14388608/ERR14388608_1.fastq.gz'
                 ],
             'ftp_url_read_2': [
-                'ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR156/006/ERR15625306/ERR15625306_2.fastq.gz',
-                'ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR156/007/ERR15625307/ERR15625307_2.fastq.gz'
+                'ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR143/005/ERR14388605/ERR14388605_2.fastq.gz',
+	            'ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR143/008/ERR14388608/ERR14388608_2.fastq.gz'
             ]
         }
     )
@@ -145,16 +145,16 @@ def test_download_all_fastqs(tmp_path):
     with open(expected_manifest_path,'r') as f:
         manifest_lines = list(f)
         assert manifest_lines[0].startswith('run_accession,'), 'first line of manifest file starts with "run_accession" field and looks like csv'
-        assert manifest_lines[1].startswith('ERR15625306,'), 'first line of manifest data starts with expected run accession ID'
+        assert manifest_lines[1].startswith('ERR14388605,'), 'first line of manifest data starts with expected run accession ID'
     
-    assert (tmp_path / 'ERR15625306_1.fastq.gz').exists(), 'a FASTQ file was downloaded'
-    assert (tmp_path / 'ERR15625307_1.fastq.gz').exists(), 'a FASTQ file was downloaded'
-    assert (tmp_path / 'ERR15625306_2.fastq.gz').exists(), 'a FASTQ file was downloaded'
-    assert (tmp_path / 'ERR15625307_2.fastq.gz').exists(), 'a FASTQ file was downloaded'
+    assert (tmp_path / 'ERR14388605_1.fastq.gz').exists(), 'a FASTQ file was downloaded'
+    assert (tmp_path / 'ERR14388608_1.fastq.gz').exists(), 'a FASTQ file was downloaded'
+    assert (tmp_path / 'ERR14388605_2.fastq.gz').exists(), 'a FASTQ file was downloaded'
+    assert (tmp_path / 'ERR14388608_2.fastq.gz').exists(), 'a FASTQ file was downloaded'
 
     
-    with open(tmp_path / 'ERR15625306_1.fastq.gz', 'rb') as f:
+    with open(tmp_path / 'ERR14388605_1.fastq.gz', 'rb') as f:
         assert f.read(2) == b'\x1f\x8b', 'the file is gzipped'
-    with gzip.open(tmp_path / 'ERR15625306_1.fastq.gz', 'rb') as f:
+    with gzip.open(tmp_path / 'ERR14388605_1.fastq.gz', 'rb') as f:
         file_content = f.read()
         assert file_content.decode("utf-8").startswith('@'), 'first line if FASTQ file starts with "@"'
