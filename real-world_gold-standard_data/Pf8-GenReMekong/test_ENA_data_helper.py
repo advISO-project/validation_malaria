@@ -134,7 +134,7 @@ def test_download_all_fastqs(tmp_path):
                 ],
             'ftp_url_read_2': [
                 'ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR143/005/ERR14388605/ERR14388605_2.fastq.gz',
-	            'ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR143/008/ERR14388608/ERR14388608_2.fastq.gz'
+                'ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR143/008/ERR14388608/ERR14388608_2.fastq.gz'
             ]
         }
     )
@@ -158,3 +158,9 @@ def test_download_all_fastqs(tmp_path):
     with gzip.open(tmp_path / 'ERR14388605_1.fastq.gz', 'rb') as f:
         file_content = f.read()
         assert file_content.decode("utf-8").startswith('@'), 'first line if FASTQ file starts with "@"'
+
+    data.rename(columns={"run_accession": "accession"}, inplace=True)
+    with pytest.raises(ValueError, match='data is missing columns'):
+        download_all_fastqs(data=data,outdir=tmp_path)
+        
+    assert download_all_fastqs(data=data,outdir=tmp_path, run_accession_col='accession'),'non-default col name correctly applied'

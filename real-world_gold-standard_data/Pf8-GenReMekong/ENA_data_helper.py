@@ -36,9 +36,20 @@ import urllib.request
 
 def args_parser():     
     parser = argparse.ArgumentParser(
-        description = "ENA_fetch_fastq_pf8_genre.py: helper tool for downloading FASTQ from ENA") 
+        description = "ENA_data_helper.py: helper tool for downloading FASTQ from ENA") 
 
-    parser.add_argument(
+    # Currently, there is only one command available (download). 
+    # The rest of the functionality of this module is currently meant to be used in 
+    # interactive Jupyter notebooks but could be accessed via sub-commands in the CLI too.  
+    subparsers = parser.add_subparsers()
+    subparsers.required = True
+    subparsers.dest = 'command'
+    
+    download_parser = subparsers.add_parser(
+        'download', help='download command')
+    download_parser.set_defaults( func = cli_download_fastqs )
+
+    download_parser.add_argument(
         '--data','-d',
         action = 'store',
         required = True,
@@ -46,26 +57,27 @@ def args_parser():
         type = str,
         help='path to the dataset csv file. The file must contain a column "sample"')
 
-    parser.add_argument(
+    download_parser.add_argument(
         '--out','-o',
         action = 'store',
         required = True,
         metavar = 'DIR', 
         type = str,
-        help='path to a directory where results will be written into subdirectories. Must not exist yet')
+        help='path to a directory (must not exist yet) where downloaded files are deposited')
 
-    parser.add_argument(
+    download_parser.add_argument(
         '--top3',
         action = 'store_true',
+        required = False,
         help = 'when used, only the data for the first 3 rows in the data file are downloaded. Use this first to ensure that the output is what you are expecting before proceeding to a full download' )
 
-    parser.add_argument(
+    download_parser.add_argument(
         '--skip_errors',
         action = 'store_true',
         help ='when used, rows of data that would otherwise throw and exception are just skipped and a message is printed'
     )
 
-    parser.add_argument(
+    download_parser.add_argument(
         '--download_attempts',
         action = 'store',
         default= 3,
@@ -73,6 +85,36 @@ def args_parser():
         type = int,
         help='Optional number of attempts to try FTP downloads. Defaults to 3')
 
+    download_parser.add_argument(
+        '--no_manifest',
+        action = 'store_true',
+        help ='do not create a manifest file in the output directory'
+    )
+    
+    download_parser.add_argument(
+        '--ftp_url_read_1_col',
+        action = 'store',
+        default= 'ftp_url_read_1',
+        required = False, 
+        type = str,
+        help='Name of the read 1 FTP URL column, if not "ftp_url_read_1"')
+        
+    download_parser.add_argument(
+        '--ftp_url_read_2_col',
+        action = 'store',
+        default= 'ftp_url_read_2',
+        required = False, 
+        type = str,
+        help='Name of the read 2 FTP URL column, if not "ftp_url_read_2"')
+    
+        
+    download_parser.add_argument(
+        '--run_accession_col',
+        action = 'store',
+        default= 'run_accession',
+        required = False, 
+        type = str,
+        help='Name of the run accession column, if not "run_accession"')
 
     return parser
 
@@ -307,7 +349,7 @@ def merge_ena_results_into_sample_data_genre_pf8(sample_data:pd.DataFrame, ena_r
     return new_df
 
 
-def download_all_fastqs(outdir, data:pd.DataFrame=None, data_file_path:str=None, create_manifest:bool=True, num_tries:int=3, ftp_url_read_1_col:str='ftp_url_read_1',ftp_url_read_2_col:str='ftp_url_read_2',run_accession_col:str='run_accession'):
+def download_all_fastqs(outdir, data:pd.DataFrame=None, data_file_path:str=None, create_manifest:bool=True, num_tries:int=3, ftp_url_read_1_col:str='ftp_url_read_1',ftp_url_read_2_col:str='ftp_url_read_2',run_accession_col:str='run_accession',skip_errors:bool=False,top3:bool=False):
     """
     Download the FASTQ files from a table of FTP URLs, which can be provided as a DataFrame or a path to a 
     csv file. The file must contains a column for the ENA run accession and one column each for the FASTQ 
@@ -320,15 +362,17 @@ def download_all_fastqs(outdir, data:pd.DataFrame=None, data_file_path:str=None,
     Args:
         data (pandas.DataFrame): DataFrame with run_accession and read1/2 FTP URLs to download from
         data_file_path (str): path to a csv file with the run_accession and FTP URLs 
-        
+        outdir (str): path to output dir (must not exist yet)
+
         ftp_url_read_1_col (str): name of the column in {data} that contains the read 1 FTP URLs,  
             defaults to 'ftp_url_read_1'
         ftp_url_read_2_col (str): name of the column in {data} that contains the read 2 FTP URLs,  
             defaults to 'ftp_url_read_2'
         run_accession_col (str): name of the column in {data} that contains run accession IDs, 
             defaults to 'run_accession'
-        outdir (str): path to output dir (must not exist yet)
         create_manifest (bool): if True, a manifest file is created in {outdir}
+        skip_errors (bool): if True, skip download errors and continue with next time, don't throw exception. 
+        top3 (bool): if True, only process the first 3 rows of the data (useful for testing)
         
     Returns:
         True on success
@@ -354,17 +398,19 @@ def download_all_fastqs(outdir, data:pd.DataFrame=None, data_file_path:str=None,
         manifest_writer = csv.DictWriter(manifest_fh, fieldnames=fields)
         manifest_writer.writeheader()
     
-    expected_cols = [run_accession_col, ftp_url_read_1_col, ftp_url_read_2_col]
-    if not set(expected_cols).issubset(set(data.columns.values)):
-        raise ValueError(f'ENA data table does not have all of the expected column headers: {expected_cols}')
-
     n_rows = len(data)
     i = 0
     for _, row in data.iterrows():
         i+=1
-        run_accession = row[run_accession_col]
-        ftp_url_read_1 = row[ftp_url_read_1_col]
-        ftp_url_read_2 = row[ftp_url_read_2_col]
+        if top3 and i>3:
+            print("option top3 in use: stopping after three rows processed")
+            break
+        try:
+            run_accession = row[run_accession_col]
+            ftp_url_read_1 = row[ftp_url_read_1_col]
+            ftp_url_read_2 = row[ftp_url_read_2_col]
+        except KeyError:
+            raise ValueError(f'data is missing columns. Make sure the following columns exist: {", ".join([run_accession_col, ftp_url_read_1_col, ftp_url_read_2_col])}')
         read_1_file = _download_fastq_file( ftp_url_read_1, outdir, num_tries=num_tries)
         read_2_file = _download_fastq_file( ftp_url_read_2, outdir, num_tries=num_tries)
         print(f'downloaded FASTQ pair {i} of {n_rows}')
@@ -383,7 +429,7 @@ def download_all_fastqs(outdir, data:pd.DataFrame=None, data_file_path:str=None,
     
     return True
 
-def _download_fastq_file( remote_ftp_url:str, dir, num_tries:int=3):
+def _download_fastq_file( remote_ftp_url:str, dir, num_tries:int=3, skip_errors:bool=False):
     """
     Downloads a single FASTQ file from a remote URL path into a local file
 
@@ -391,6 +437,7 @@ def _download_fastq_file( remote_ftp_url:str, dir, num_tries:int=3):
         remote_ftp_url (str): URL of the remote file
         dir (PosixPath): path to directory into which the file is downloaded
         num_tries (int): number of times download should be tried in case of errors
+        skip_errors (bool): if True, skip download errors and continue with next time, don't throw exception. 
 
     Returns:
         PosixPath of locally downloaded file
@@ -412,23 +459,35 @@ def _download_fastq_file( remote_ftp_url:str, dir, num_tries:int=3):
             attempt += 1
             
     if not local_path.exists():
-        raise Exception(f'Failed to download {remote_ftp_url} after {attempt} attempts. Last error raised: {last_error}')
+        msg = f'Failed to download {remote_ftp_url} after {attempt} attempts. Last error raised: {last_error}'
+        if skip_errors:
+            print("\n".join([msg,'   Option skip_errors in use, continue with next download']))
+            local_path='DOWNLOAD FAILED'
+        else:
+            raise Exception(msg)
     
     return str(local_path)
+
+def cli_download_fastqs(args):
+    """
+    CLI function to run download_all_fastqs
+    """
+    return download_all_fastqs(
+        outdir=args.out,
+        data_file_path=args.data,
+        create_manifest= not args.no_manifest,
+        num_tries=args.download_attempts,
+        ftp_url_read_1_col=args.ftp_url_read_1_col,
+        ftp_url_read_2_col=args.ftp_url_read_2_col,
+        run_accession_col=args.run_accession_col,
+        skip_errors=args.skip_errors,
+        top3=args.top3
+    )
 
 def main():
     
     args = args_parser().parse_args()
-    
-    outdir = args.out
-    pathlib.Path(outdir).mkdir(parents=True, exist_ok=False)
-    samples = parse_sample_ids(args.data)
-    ena_data = search_ena(samples)
-    pf8_data, genre_data = split_search_result_by_resource(ena_data, skip_errors=args.skip_errors)
-    
-    download_attempts = args.download_attempts
-    for name, data in dict(zip(['Pf8','GenRe_Mekong'],[pf8_data, genre_data])).items():
-        download_fastq(name, data, outdir, create_manifest=True, num_tries=download_attempts)
-    
+    return args.func(args) 
+
 if __name__ == "__main__":
     exit(main())
