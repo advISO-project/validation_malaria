@@ -466,6 +466,10 @@ def _download_fastq_file( remote_ftp_url:str, dir, num_tries:int=3, skip_errors:
             local_path='DOWNLOAD FAILED'
         else:
             raise Exception(msg)
+    else:
+        # give some feedback if this took more than one attempt
+        if attempt>1:
+            print(f'download attempt {attempt} of {num_tries} succeeded for URL {remote_ftp_url}')
     
     return str(local_path)
 
