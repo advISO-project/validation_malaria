@@ -1,29 +1,18 @@
 """
-This script downloads FASTQ files for the Pf8/GenRe Mekong datasets provided in this resource.  
+this module provides functions to search ENA for samples by sample ID, which are used in the 
+Jupyter notebook pf8genre.ipynb in the same folder.  
 
-To run the script, make sure all dependencies are installed. A file with dependencies is provide in this folder. To install dependencies, run the 
+It also provides function for ENA data download, which can be used interactively or through a 
+command line interface.  
+
+To use the module, make sure all dependencies are installed. A file with dependencies is provide in this folder. To install dependencies, run the 
 following command:
 pip install requirements.txt 
 
-The script will download FASTQ files for ALL samples in the datafile by default. 
-Before going ahead with the full download, it is recommended to run the script with 
-the --top3 option first. This will run the downloader on the top 3 rows of the data 
-file only and provide an opportunity to check the output before downloading all 
-data. 
+The jupyter notebook provides usage examples. To run the command-line tool, consult the help 
+output by running:
 
-The script creates an output directory into which it writes two manifest files, one 
-for Pf8 and one for GenRe Mekong data. The manifest files contain sample and accession IDs 
-as well as paths to the FASTQ files. For GenRe data, each sample has three rows, one for each 
-of the three primer panels GRC1, GRC2 and SPEC. For Pf8, each sample only contains a single row 
-of data.  
-One sub-directory is created for Pf8 and one for GenRe, which contains the downloaded FASTQ files 
-that are references in the manifest files.  
-
-Run the script with:
-python ENA_featch_fastq_pf8_genre.py --data DATAFILE
-
-For a list of options run:
-python ENA_featch_fastq_pf8_genre.py -h
+python3 ENA_data_helper.py download --help
 
 """
 import pandas as pd
@@ -74,7 +63,7 @@ def args_parser():
     download_parser.add_argument(
         '--skip_errors',
         action = 'store_true',
-        help ='when used, rows of data that would otherwise throw and exception are just skipped and a message is printed'
+        help ='when used, rows of data that would otherwise throw an exception are just skipped and a message is printed'
     )
 
     download_parser.add_argument(
