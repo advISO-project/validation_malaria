@@ -19,6 +19,7 @@ import pandas as pd
 import requests
 import argparse
 import csv
+import time
 import pathlib
 from io import StringIO
 import urllib.request
@@ -400,8 +401,8 @@ def download_all_fastqs(outdir, data:pd.DataFrame=None, data_file_path:str=None,
             ftp_url_read_2 = row[ftp_url_read_2_col]
         except KeyError:
             raise ValueError(f'data is missing columns. Make sure the following columns exist: {", ".join([run_accession_col, ftp_url_read_1_col, ftp_url_read_2_col])}')
-        read_1_file = _download_fastq_file( ftp_url_read_1, outdir, num_tries=num_tries)
-        read_2_file = _download_fastq_file( ftp_url_read_2, outdir, num_tries=num_tries)
+        read_1_file = _download_fastq_file( ftp_url_read_1, outdir, num_tries=num_tries, skip_errors=skip_errors)
+        read_2_file = _download_fastq_file( ftp_url_read_2, outdir, num_tries=num_tries, skip_errors=skip_errors)
         print(f'downloaded FASTQ pair {i} of {n_rows}')
             
         if create_manifest:
@@ -447,6 +448,7 @@ def _download_fastq_file( remote_ftp_url:str, dir, num_tries:int=3, skip_errors:
             print(f'download attempt {attempt} of {num_tries} failed for URL {remote_ftp_url}')
             last_error = e
             attempt += 1
+            time.sleep(5)
             
     if not local_path.exists():
         msg = f'Failed to download {remote_ftp_url} after {attempt} attempts. Last error raised: {last_error}'
