@@ -468,7 +468,7 @@ def cli_download_fastqs(args):
     """
     CLI function to run download_all_fastqs
     """
-    return download_all_fastqs(
+    download_all_fastqs(
         outdir=args.out,
         data_file_path=args.data,
         create_manifest= not args.no_manifest,
@@ -479,6 +479,7 @@ def cli_download_fastqs(args):
         skip_errors=args.skip_errors,
         top3=args.top3
     )
+    return 0
 
 def main():
     
