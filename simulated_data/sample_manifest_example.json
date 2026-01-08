@@ -1,0 +1,112 @@
+[
+    {
+        "sample_id": "crtmut_spec_q25", 
+        "genotypes": ["wt_spec"], 
+        "proportions": [1], 
+        "num_reads": 654
+    },
+    {
+        "sample_id": "wt_spec_q50", 
+        "genotypes": ["wt_spec"], 
+        "proportions": [1], 
+        "num_reads": 988
+    },
+    {
+        "sample_id": "wt_spec_q75", 
+        "genotypes": ["wt_spec"], 
+        "proportions": [1], 
+        "num_reads": 1445
+    },
+    {
+        "sample_id": "wt_grc1_q25", 
+        "genotypes": ["wt_spec"], 
+        "proportions": [1], 
+        "num_reads": 25568
+    },
+    {
+        "sample_id": "wt_grc1_q50", 
+        "genotypes": ["wt_spec"], 
+        "proportions": [1], 
+        "num_reads": 32424
+    },
+    {
+        "sample_id": "wt_grc1_q75", 
+        "genotypes": ["wt_spec"], 
+        "proportions": [1], 
+        "num_reads": 40281
+    },
+        {
+        "sample_id": "wt_grc2_q25", 
+        "genotypes": ["wt_spec"], 
+        "proportions": [1], 
+        "num_reads": 26732
+    },
+    {
+        "sample_id": "wt_grc2_q50", 
+        "genotypes": ["wt_spec"], 
+        "proportions": [1], 
+        "num_reads": 32519
+    },
+    {
+        "sample_id": "wt_grc2_q75", 
+        "genotypes": ["wt_spec"], 
+        "proportions": [1], 
+        "num_reads": 39864
+    },
+
+    {
+        "sample_id": "crtmut_spec_q25", 
+        "genotypes": ["crtmut_spec"], 
+        "proportions": [1], 
+        "num_reads": 654
+    },
+    {
+        "sample_id": "crtmut_spec_q50", 
+        "genotypes": ["crtmut_spec"], 
+        "proportions": [1], 
+        "num_reads": 988
+    },
+    {
+        "sample_id": "crtmut_spec_q75", 
+        "genotypes": ["crtmut_spec"], 
+        "proportions": [1], 
+        "num_reads": 1445
+    },
+    {
+        "sample_id": "crtmut_grc1_q25", 
+        "genotypes": ["crtmut_spec"], 
+        "proportions": [1], 
+        "num_reads": 25568
+    },
+    {
+        "sample_id": "crtmut_grc1_q50", 
+        "genotypes": ["crtmut_spec"], 
+        "proportions": [1], 
+        "num_reads": 32424
+    },
+    {
+        "sample_id": "crtmut_grc1_q75", 
+        "genotypes": ["crtmut_spec"], 
+        "proportions": [1], 
+        "num_reads": 40281
+    },
+        {
+        "sample_id": "crtmut_grc2_q25", 
+        "genotypes": ["crtmut_spec"], 
+        "proportions": [1], 
+        "num_reads": 26732
+    },
+    {
+        "sample_id": "crtmut_grc2_q50", 
+        "genotypes": ["crtmut_spec"], 
+        "proportions": [1], 
+        "num_reads": 32519
+    },
+    {
+        "sample_id": "crtmut_grc2_q75", 
+        "genotypes": ["crtmut_spec"], 
+        "proportions": [1], 
+        "num_reads": 39864
+    }
+
+]
