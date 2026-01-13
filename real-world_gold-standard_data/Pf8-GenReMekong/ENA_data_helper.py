@@ -260,10 +260,10 @@ def merge_ena_results_into_sample_data_genre_pf8(sample_data:pd.DataFrame, ena_r
         raise ValueError('both DataFrames need to have a column "sample"')
     
     new_df = sample_data.copy().set_index('sample')
-    new_df['ENA_acc_Pf8'] = None
-    new_df['ENA_acc_GenRe_GRC1'] = None
-    new_df['ENA_acc_GenRe_GRC2'] = None
-    new_df['ENA_acc_GenRe_SPEC'] = None
+    new_df['INSDC_Pf8'] = None
+    new_df['INSDC_GenRe_GRC1'] = None
+    new_df['INSDC_GenRe_GRC2'] = None
+    new_df['INSDC_GenRe_SPEC'] = None
 
     if include_download_link:
         for i in [1,2]:
@@ -321,7 +321,7 @@ def merge_ena_results_into_sample_data_genre_pf8(sample_data:pd.DataFrame, ena_r
             else:
                 raise ValueError(msg)
         
-        accession_col = 'ENA_acc_'+run_accession_type
+        accession_col = 'INSDC_'+run_accession_type
         if new_df.loc[[sample], accession_col].any():
             raise ValueError(f'More than one run accessions found for sample {sample}, field {accession_col}')
         else:
