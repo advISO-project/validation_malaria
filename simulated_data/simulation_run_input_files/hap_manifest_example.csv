@@ -1,7 +1,7 @@
 haplotype,base_fasta,variants_file,bed_file
-wt_spec,PlasmoDB-68_Pfalciparum3D7_Genome.fasta,null,SpotMalaria-SPEC_Pf_amplicon_primers.bed
+wt_spec,Pf_M76611.fasta,null,SpotMalaria-SPEC_Pf_amplicon_primers.bed
 wt_grc1,PlasmoDB-68_Pfalciparum3D7_Genome.fasta,null,SpotMalaria-GRC1_Pf_amplicon_primers.bed
 wt_grc2,PlasmoDB-68_Pfalciparum3D7_Genome.fasta,null,SpotMalaria-GRC2_Pf_amplicon_primers.bed
-crtmut_spec,PlasmoDB-68_Pfalciparum3D7_Genome.fasta,Pf3D7_07_v3_403625_a2c,SpotMalaria-SPEC_Pf_amplicon_primers.bed
+crtmut_spec,Pf_M76611.fasta,Pf3D7_07_v3_403625_a2c,SpotMalaria-SPEC_Pf_amplicon_primers.bed
 crtmut_grc1,PlasmoDB-68_Pfalciparum3D7_Genome.fasta,Pf3D7_07_v3_403625_a2c,SpotMalaria-GRC1_Pf_amplicon_primers.bed
 crtmut_grc2,PlasmoDB-68_Pfalciparum3D7_Genome.fasta,Pf3D7_07_v3_403625_a2c,SpotMalaria-GRC2_Pf_amplicon_primers.bed
