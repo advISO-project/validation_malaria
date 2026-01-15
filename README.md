@@ -29,7 +29,7 @@ To make use of this overlap between the projects, the datasets provided are base
 
 ### Datasets provided
 1. Samples where all inferred drug resistance phenotypes that have been tested in both projects are identical: [Pf8-GenReMekong_concordant_phenotypes.csv](real-world_gold-standard_data/Pf8-GenReMekong/Pf8-GenReMekong_concordant_phenotypes.csv)
-2. All samples where all genotypes at loci known to be relevant to drug resistances are identical: [Pf8-GenReMekong_concordant_genotypes.csv)](real-world_gold-standard_data/Pf8-GenReMekong/Pf8-GenReMekong_concordant_genotypes.csv)
+2. All samples where all genotypes at loci known to be relevant to drug resistances are identical: [Pf8-GenReMekong_concordant_genotypes.csv](real-world_gold-standard_data/Pf8-GenReMekong/Pf8-GenReMekong_concordant_genotypes.csv)
 3. A subset of samples, each representing one distinct pattern of drug resistance haplotypes: [Pf8-GenReMekong_concordant_genotypes_representative_samples.csv](real-world_gold-standard_data/Pf8-GenReMekong/Pf8-GenReMekong_concordant_genotypes_representative_samples.csv)
 
 Full details on how these datasets were created from public sources is provided in the form of an executable [Jupyter](https://jupyter.org/) notebook [pf8genre.ipynb](real-world_gold-standard_data/Pf8-GenReMekong/scripts/pf8genre.ipynb). To [run the notebook](https://jupyter.org/install#jupyter-notebook), Python and the pandas library are the only dependencies that need to be installed.  Alternatively, consider using a public service to run Jupyter notebooks such as [Google Colab](https://colab.research.google.com/).
