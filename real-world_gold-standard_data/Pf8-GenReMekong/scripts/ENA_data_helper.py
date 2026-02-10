@@ -138,7 +138,7 @@ def create_ena_data_frame(df:pd.DataFrame, sample_id_col_name:str='sample', chun
             f'DataFrame is missing sample ID column, expected name {sample_id_col_name} ' +
             '(can be changed with param "sample_id_col_name")')
     
-    fields = ['sample_title','run_accession','center_name','library_strategy','sample_accession','fastq_ftp','submitted_ftp']
+    fields = ['sample_title','run_accession','read_count','center_name','library_strategy','sample_accession','fastq_ftp','submitted_ftp']
     
     # split the list of sample IDs into chunks of max_chunk_size IDs each in order 
     # to avoid an exception due to URLs becoming too long
@@ -211,7 +211,8 @@ def merge_ena_results_into_sample_data_genre_pf8(sample_data:pd.DataFrame, ena_r
     Data is assigned to Pf8 or GenRe based on the information in column 'center_name'.  
     A sanity check id performed against column 'library_strategy' (Pf8 data should be WGS, GenRe 
     should be AMPLICON). The GenRe panel is extracted from the submitted cram file names in 
-    'submitted_ftp'. If download links are to be included, two mate FASTQ files are expected in 
+    'submitted_ftp'. THIS INFORMATION IS NOT AVAILABLE ELSEWHERE IN THE RECORD!
+    If download links are to be included, two mate FASTQ files are expected in 
     field 'fastq_ftp'.  
     
     NOTE
@@ -259,11 +260,15 @@ def merge_ena_results_into_sample_data_genre_pf8(sample_data:pd.DataFrame, ena_r
     if not sample_id_col_name in sample_data or not sample_id_col_name in ena_result:
         raise ValueError('both DataFrames need to have a column "sample"')
     
-    new_df = sample_data.copy().set_index('sample')
+    new_df = sample_data.copy()
     new_df['INSDC_Pf8'] = None
+    new_df['INSDC_Pf8_readcount'] = None
     new_df['INSDC_GenRe_GRC1'] = None
+    new_df['INSDC_GenRe_GRC1_readcount'] = None
     new_df['INSDC_GenRe_GRC2'] = None
+    new_df['INSDC_GenRe_GRC2_readcount'] = None
     new_df['INSDC_GenRe_SPEC'] = None
+    new_df['INSDC_GenRe_SPEC_readcount'] = None
 
     if include_download_link:
         for i in [1,2]:
@@ -279,6 +284,7 @@ def merge_ena_results_into_sample_data_genre_pf8(sample_data:pd.DataFrame, ena_r
             center = row['center_name']
             strategy = row['library_strategy']
             submitted_ftp = row['submitted_ftp']
+            readcount = row['read_count']
             if include_download_link:
                 fastq_ftp = row['fastq_ftp']
         except KeyError as e:
@@ -322,10 +328,14 @@ def merge_ena_results_into_sample_data_genre_pf8(sample_data:pd.DataFrame, ena_r
                 raise ValueError(msg)
         
         accession_col = 'INSDC_'+run_accession_type
-        if new_df.loc[[sample], accession_col].any():
+        readcount_col = accession_col+'_readcount'
+        if new_df.loc[new_df['sample'] == sample, accession_col].any():
             raise ValueError(f'More than one run accessions found for sample {sample}, field {accession_col}')
         else:
-            new_df.loc[sample, accession_col]=run_accession
+            new_df.loc[new_df['sample'] == sample, accession_col]=run_accession
+            # ENA read counts are summed over both ends in paired end. So need to divide by two to get 
+            # number of read pairs (which is almost always what we want)
+            new_df.loc[new_df['sample'] == sample, readcount_col]=readcount / 2
             if include_download_link:
                 if not ';' in fastq_ftp:
                     raise ValueError(f'FASTQ FTP field in this row does not contain 2 links: {row}')
@@ -334,7 +344,7 @@ def merge_ena_results_into_sample_data_genre_pf8(sample_data:pd.DataFrame, ena_r
                     if not ftp_url.startswith('ftp://'):
                         ftp_url = 'ftp://'+ftp_url
                     ftp_col = run_accession_type+'_ENA_FASTQ_FTP_'+str(i+1)
-                    new_df.loc[sample, ftp_col]=ftp_url
+                    new_df.loc[new_df['sample'] == sample, ftp_col]=ftp_url
 
     return new_df
 
