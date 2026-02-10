@@ -1,17 +1,16 @@
 # A resource for malaria gold-standard validation data
 
-## Aim of this resource
-The aim of this resource is to provide datasets that may be used in validating malaria genomics pipelines. Validating a custom pipeline is a key step in the accreditation process.  
-Two datasets are provided:  
-- high-quality real-world data from public resources
-- simulated data: example data and recipes 
+## Introduction
+The aim of this resource is to provide datasets that may be used in validating bioinformatics pipelines that use genomic data to infer the drug resistance status in Plasmodium falciparum samples. Validating a custom pipeline is a key step in the accreditation process.  
 
-## Real-world data
-The data in this section was obtained from two high-profile public malaria genomics resources:  
+Ideally, the basis for such a dataset would be a set of samples that (a) have been sequenced, and (b) have a drug resistance status (i.e. sensitive or resistent) that has been confirmed in a clinical setting. However, as no such datasets are freely available for malaria, we take two different approaches to fill this gap: one based on real samples for which the genomic data and prediction of the resistance status have been obtained by two independent means, with concordance being used as marker of quality/confience; and the other based on custom-designed sythetic read sets (for which the "correct answer" is known by construction).
+
+## Approach 1: Real-world data
+The data in this approach was obtained from two high-profile public malaria genomics resources:  
 1. [MalariaGEN Pf8](https://www.malariagen.net/data_package/open-dataset-plasmodium-falciparum-v80/)
 2. [GenRe Mekong](https://www.malariagen.net/resource/29/)
 
-A large number of samples (see notebooks for details) was examined by both projects under a common sample ID. This provides an opportunity to create high-quality datasets where two different analysis methodologies based on different sequencing technologies arrive at the same conclusions.  
+A large number of samples was examined by both projects under a common sample ID. This provides an opportunity to create high-quality datasets where two different analysis methodologies based on different sequencing technologies arrive at the same conclusions.  
 
 ### Assumptions
 Analysis pipelines differ in scope and methodology. Thus, no single dataset will be applicable to every possible genomics pipeline. For the selection of real-world public datasets, we are assuming that the pipeline to be validated produces at least some of the following:  
@@ -22,10 +21,6 @@ Furthermore, we assume that the pipeline can work with _P. falciparum_ data.
 For pipelines that are using amplicon sequencing (AmpSeq) data, we assume that the pipeline can work with the SpotMalaria panel. For details about this panel, consult the [SpotMalaria technical manual](https://ngs.sanger.ac.uk/production/malaria/Resource/29/20200705-GenRe-04a-SpotMalaria-0.39.pdf) and [this SpotMalaria supplementary data file](https://www.malariagen.net/wp-content/uploads/2023/11/20200705-GenRe-04b-SpotMalaria-SupplementaryFile1.xlsx), which provides details for every primer used in the panel.  
 
 For pipelines that work with AmpSeq data for a specific primer panel that is not SpotMalaria, please take a look at the section on [simulated data](#simulated-data), which shows how to create simulated runs for cases where real-world data may not exist.
-
-### Approach for creating high-quality datasets
-In order to create the most high-quality datasets, we made use of that fact that a large number of samples have been independently analysed by both projects and that the two projects use different sequencing technology and analysis pipelines to create genotype and resistance phenotype calls. 
-To make use of this overlap between the projects, the datasets provided are based on full agreement of results between Pf8 and GenRe Mekong. Thus, every sample in the final datasets have results that are confirmed by two independent sequencing and analysis methods.  
 
 ### Datasets provided
 1. Samples where all inferred drug resistance phenotypes that have been tested in both projects are identical: [Pf8-GenReMekong_concordant_phenotypes.csv](real-world_gold-standard_data/Pf8-GenReMekong/Pf8-GenReMekong_concordant_phenotypes.csv)
