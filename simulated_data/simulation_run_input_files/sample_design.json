@@ -1,0 +1,776 @@
+[
+  {
+    "sample_id": "WT_GRC1",
+    "genotypes": [
+      "WT_GRC1"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "WT_GRC2",
+    "genotypes": [
+      "WT_GRC2"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "WT_SPEC",
+    "genotypes": [
+      "WT_SPEC"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 1000
+  },
+  {
+    "sample_id": "Ar_k13_N458Y_GRC1",
+    "genotypes": [
+      "Ar_k13_N458Y_GRC1"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ar_k13_N458Y_GRC2",
+    "genotypes": [
+      "Ar_k13_N458Y_GRC2"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ar_k13_N458Y_SPEC",
+    "genotypes": [
+      "Ar_k13_N458Y_SPEC"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 1000
+  },
+  {
+    "sample_id": "Ar_k13_Y493H_GRC1",
+    "genotypes": [
+      "Ar_k13_Y493H_GRC1"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ar_k13_Y493H_GRC2",
+    "genotypes": [
+      "Ar_k13_Y493H_GRC2"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ar_k13_Y493H_SPEC",
+    "genotypes": [
+      "Ar_k13_Y493H_SPEC"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 1000
+  },
+  {
+    "sample_id": "Ar_k13_R539T_GRC1",
+    "genotypes": [
+      "Ar_k13_R539T_GRC1"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ar_k13_R539T_GRC2",
+    "genotypes": [
+      "Ar_k13_R539T_GRC2"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ar_k13_R539T_SPEC",
+    "genotypes": [
+      "Ar_k13_R539T_SPEC"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 1000
+  },
+  {
+    "sample_id": "Ar_k13_I543T_GRC1",
+    "genotypes": [
+      "Ar_k13_I543T_GRC1"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ar_k13_I543T_GRC2",
+    "genotypes": [
+      "Ar_k13_I543T_GRC2"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ar_k13_I543T_SPEC",
+    "genotypes": [
+      "Ar_k13_I543T_SPEC"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 1000
+  },
+  {
+    "sample_id": "Ar_k13_R561H_GRC1",
+    "genotypes": [
+      "Ar_k13_R561H_GRC1"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ar_k13_R561H_GRC2",
+    "genotypes": [
+      "Ar_k13_R561H_GRC2"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ar_k13_R561H_SPEC",
+    "genotypes": [
+      "Ar_k13_R561H_SPEC"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 1000
+  },
+  {
+    "sample_id": "Ar_k13_C580Y_GRC1",
+    "genotypes": [
+      "Ar_k13_C580Y_GRC1"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ar_k13_C580Y_GRC2",
+    "genotypes": [
+      "Ar_k13_C580Y_GRC2"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ar_k13_C580Y_SPEC",
+    "genotypes": [
+      "Ar_k13_C580Y_SPEC"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 1000
+  },
+  {
+    "sample_id": "Ar_k13_E252Q_GRC1",
+    "genotypes": [
+      "Ar_k13_E252Q_GRC1"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ar_k13_E252Q_GRC2",
+    "genotypes": [
+      "Ar_k13_E252Q_GRC2"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ar_k13_E252Q_SPEC",
+    "genotypes": [
+      "Ar_k13_E252Q_SPEC"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 1000
+  },
+  {
+    "sample_id": "Ar_k13_A578S_GRC1",
+    "genotypes": [
+      "Ar_k13_A578S_GRC1"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ar_k13_A578S_GRC2",
+    "genotypes": [
+      "Ar_k13_A578S_GRC2"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ar_k13_A578S_SPEC",
+    "genotypes": [
+      "Ar_k13_A578S_SPEC"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 1000
+  },
+  {
+    "sample_id": "Ar_k13_multi1_GRC1",
+    "genotypes": [
+      "Ar_k13_multi1_GRC1"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ar_k13_multi1_GRC2",
+    "genotypes": [
+      "Ar_k13_multi1_GRC2"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ar_k13_multi1_SPEC",
+    "genotypes": [
+      "Ar_k13_multi1_SPEC"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 1000
+  },
+  {
+    "sample_id": "Ar_k13_multi2_GRC1",
+    "genotypes": [
+      "Ar_k13_multi2_h1_GRC1",
+      "Ar_k13_multi2_h2_GRC1"
+    ],
+    "proportions": [
+      0.5,
+      0.5
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ar_k13_multi2_GRC2",
+    "genotypes": [
+      "Ar_k13_multi2_h1_GRC2",
+      "Ar_k13_multi2_h2_GRC2"
+    ],
+    "proportions": [
+      0.5,
+      0.5
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ar_k13_multi2_SPEC",
+    "genotypes": [
+      "Ar_k13_multi2_h1_SPEC",
+      "Ar_k13_multi2_h2_SPEC"
+    ],
+    "proportions": [
+      0.5,
+      0.5
+    ],
+    "num_reads": 1000
+  },
+  {
+    "sample_id": "Ch_crt_76_het_GRC1",
+    "genotypes": [
+      "Ch_crt_76_het_h1_GRC1",
+      "Ch_crt_76_het_h2_GRC1"
+    ],
+    "proportions": [
+      0.5,
+      0.5
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ch_crt_76_het_GRC2",
+    "genotypes": [
+      "Ch_crt_76_het_h1_GRC2",
+      "Ch_crt_76_het_h2_GRC2"
+    ],
+    "proportions": [
+      0.5,
+      0.5
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ch_crt_76_het_SPEC",
+    "genotypes": [
+      "Ch_crt_76_het_h1_SPEC",
+      "Ch_crt_76_het_h2_SPEC"
+    ],
+    "proportions": [
+      0.5,
+      0.5
+    ],
+    "num_reads": 1000
+  },
+  {
+    "sample_id": "Ch_crt_76T_GRC1",
+    "genotypes": [
+      "Ch_crt_76T_GRC1"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ch_crt_76T_GRC2",
+    "genotypes": [
+      "Ch_crt_76T_GRC2"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ch_crt_76T_SPEC",
+    "genotypes": [
+      "Ch_crt_76T_SPEC"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 1000
+  },
+  {
+    "sample_id": "Ch_crt_76R_GRC1",
+    "genotypes": [
+      "Ch_crt_76R_GRC1"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ch_crt_76R_GRC2",
+    "genotypes": [
+      "Ch_crt_76R_GRC2"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Ch_crt_76R_SPEC",
+    "genotypes": [
+      "Ch_crt_76R_SPEC"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 1000
+  },
+  {
+    "sample_id": "Py_dhfr_108_het_GRC1",
+    "genotypes": [
+      "Py_dhfr_108_het_h1_GRC1",
+      "Py_dhfr_108_het_h2_GRC1"
+    ],
+    "proportions": [
+      0.5,
+      0.5
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Py_dhfr_108_het_GRC2",
+    "genotypes": [
+      "Py_dhfr_108_het_h1_GRC2",
+      "Py_dhfr_108_het_h2_GRC2"
+    ],
+    "proportions": [
+      0.5,
+      0.5
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Py_dhfr_108_het_SPEC",
+    "genotypes": [
+      "Py_dhfr_108_het_h1_SPEC",
+      "Py_dhfr_108_het_h2_SPEC"
+    ],
+    "proportions": [
+      0.5,
+      0.5
+    ],
+    "num_reads": 1000
+  },
+  {
+    "sample_id": "Py_dhfr_108N_GRC1",
+    "genotypes": [
+      "Py_dhfr_108N_GRC1"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Py_dhfr_108N_GRC2",
+    "genotypes": [
+      "Py_dhfr_108N_GRC2"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Py_dhfr_108N_SPEC",
+    "genotypes": [
+      "Py_dhfr_108N_SPEC"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 1000
+  },
+  {
+    "sample_id": "Py_dhfr_108I_GRC1",
+    "genotypes": [
+      "Py_dhfr_108I_GRC1"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Py_dhfr_108I_GRC2",
+    "genotypes": [
+      "Py_dhfr_108I_GRC2"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Py_dhfr_108I_SPEC",
+    "genotypes": [
+      "Py_dhfr_108I_SPEC"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 1000
+  },
+  {
+    "sample_id": "Su_dhps_437_het_GRC1",
+    "genotypes": [
+      "Su_dhps_437_het_h1_GRC1",
+      "Su_dhps_437_het_h2_GRC1"
+    ],
+    "proportions": [
+      0.5,
+      0.5
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Su_dhps_437_het_GRC2",
+    "genotypes": [
+      "Su_dhps_437_het_h1_GRC2",
+      "Su_dhps_437_het_h2_GRC2"
+    ],
+    "proportions": [
+      0.5,
+      0.5
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Su_dhps_437_het_SPEC",
+    "genotypes": [
+      "Su_dhps_437_het_h1_SPEC",
+      "Su_dhps_437_het_h2_SPEC"
+    ],
+    "proportions": [
+      0.5,
+      0.5
+    ],
+    "num_reads": 1000
+  },
+  {
+    "sample_id": "Su_dhps_437G_GRC1",
+    "genotypes": [
+      "Su_dhps_437G_GRC1"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Su_dhps_437G_GRC2",
+    "genotypes": [
+      "Su_dhps_437G_GRC2"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Su_dhps_437G_SPEC",
+    "genotypes": [
+      "Su_dhps_437G_SPEC"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 1000
+  },
+  {
+    "sample_id": "Su_dhps_437D_GRC1",
+    "genotypes": [
+      "Su_dhps_437D_GRC1"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Su_dhps_437D_GRC2",
+    "genotypes": [
+      "Su_dhps_437D_GRC2"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "Su_dhps_437D_SPEC",
+    "genotypes": [
+      "Su_dhps_437D_SPEC"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 1000
+  },
+  {
+    "sample_id": "S-P_triple_mut_GRC1",
+    "genotypes": [
+      "S-P_triple_mut_GRC1"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "S-P_triple_mut_GRC2",
+    "genotypes": [
+      "S-P_triple_mut_GRC2"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "S-P_triple_mut_SPEC",
+    "genotypes": [
+      "S-P_triple_mut_SPEC"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 1000
+  },
+  {
+    "sample_id": "S-P_sextuple_mut_GRC1",
+    "genotypes": [
+      "S-P_sextuple_mut_GRC1"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "S-P_sextuple_mut_GRC2",
+    "genotypes": [
+      "S-P_sextuple_mut_GRC2"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "S-P_sextuple_mut_SPEC",
+    "genotypes": [
+      "S-P_sextuple_mut_SPEC"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 1000
+  },
+  {
+    "sample_id": "S-P-all_mut_GRC1",
+    "genotypes": [
+      "S-P-all_mut_GRC1"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "S-P-all_mut_GRC2",
+    "genotypes": [
+      "S-P-all_mut_GRC2"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "S-P-all_mut_SPEC",
+    "genotypes": [
+      "S-P-all_mut_SPEC"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 1000
+  },
+  {
+    "sample_id": "S-P-sextuple_mut_sens_GRC1",
+    "genotypes": [
+      "S-P-sextuple_mut_sens_GRC1"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "S-P-sextuple_mut_sens_GRC2",
+    "genotypes": [
+      "S-P-sextuple_mut_sens_GRC2"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "S-P-sextuple_mut_sens_SPEC",
+    "genotypes": [
+      "S-P-sextuple_mut_sens_SPEC"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 1000
+  },
+  {
+    "sample_id": "All_mut_GRC1",
+    "genotypes": [
+      "All_mut_GRC1"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "All_mut_GRC2",
+    "genotypes": [
+      "All_mut_GRC2"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 32000
+  },
+  {
+    "sample_id": "All_mut_SPEC",
+    "genotypes": [
+      "All_mut_SPEC"
+    ],
+    "proportions": [
+      1.0
+    ],
+    "num_reads": 1000
+  }
+]
