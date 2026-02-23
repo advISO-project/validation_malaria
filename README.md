@@ -1,16 +1,16 @@
 # A resource for malaria gold-standard validation data
 
 ## Introduction
-The aim of this resource is to provide datasets that may be used in validating bioinformatics pipelines that use genomic data to infer the drug resistance status in Plasmodium falciparum samples. Validating a custom pipeline is a key step in the accreditation process.  
+The aim of this resource is to provide datasets that may be used in validating bioinformatics pipelines that use genomic data to infer the drug resistance status of Plasmodium falciparum samples. Validation and verification of pipelines are key activities in the ISO accreditation.   
 
-Ideally, the basis for such a dataset would be a set of samples that (a) have been sequenced, and (b) have a drug resistance status (i.e. sensitive or resistent) that has been confirmed in a clinical setting. However, as no such datasets are freely available for malaria, we take two different approaches to fill this gap: one based on real samples for which the genomic data and prediction of the resistance status have been obtained by two independent means, with concordance being used as marker of quality/confience; and the other based on custom-designed sythetic read sets (for which the "correct answer" is known by construction).
+Ideally, the basis for such a dataset would be a set of samples that (a) have been sequenced, and (b) have a drug resistance status (i.e. sensitive or resistent) that has been confirmed in a clinical setting. However, as no such datasets are freely available for malaria, we take two different approaches to fill this gap: one based on real samples for which the genomic data and prediction of the resistance status have been obtained by two independent means, with concordance being used as marker of quality/confidence; and the other based on custom-designed sythetic read sets (for which the "correct answer" is known by construction).
 
 ## Approach 1: Real-world data
 The data in this approach was obtained from two high-profile public malaria genomics resources:  
 1. [MalariaGEN Pf8](https://www.malariagen.net/data_package/open-dataset-plasmodium-falciparum-v80/)
 2. [GenRe Mekong](https://www.malariagen.net/resource/29/)
 
-A large number of samples was examined by both projects under a common sample ID. This provides an opportunity to create high-quality datasets where two different analysis methodologies based on different sequencing technologies arrive at the same conclusions.  
+A large number of samples have been sequenced and analysed by both projects,  under a common sample ID. This provides an opportunity to create high-quality datasets where two different analysis methodologies based on different sequencing technologies arrive at the same conclusions.  
 
 ### Assumptions
 Analysis pipelines differ in scope and methodology. Thus, no single dataset will be applicable to every possible genomics pipeline. For the selection of real-world public datasets, we are assuming that the pipeline to be validated produces at least some of the following:  
@@ -18,7 +18,7 @@ Analysis pipelines differ in scope and methodology. Thus, no single dataset will
 - high-level drug-resistance phenotype calls 
 Furthermore, we assume that the pipeline can work with _P. falciparum_ data.  
 
-For pipelines that are using amplicon sequencing (AmpSeq) data, we assume that the pipeline can work with the SpotMalaria panel. For details about this panel, consult the [SpotMalaria technical manual](https://ngs.sanger.ac.uk/production/malaria/Resource/29/20200705-GenRe-04a-SpotMalaria-0.39.pdf) and [this SpotMalaria supplementary data file](https://www.malariagen.net/wp-content/uploads/2023/11/20200705-GenRe-04b-SpotMalaria-SupplementaryFile1.xlsx), which provides details for every primer used in the panel.  
+For pipelines that are using amplicon sequencing (AmpSeq) data, we assume that the pipeline can work with the SpotMalaria panel. For details about this panel, consult the [SpotMalaria technical manual](https://ngs.sanger.ac.uk/production/malaria/Resource/29/20200705-GenRe-04a-SpotMalaria-0.39.pdf) and [this SpotMalaria supplementary data file](https://www.malariagen.net/wp-content/uploads/2023/11/20200705-GenRe-04b-SpotMalaria-SupplementaryFile1.xlsx), which provides details for primers used in the panel.  
 
 For pipelines that work with AmpSeq data for a specific primer panel that is not SpotMalaria, please take a look at the section on [simulated data](#simulated-data), which shows how to create simulated runs for cases where real-world data may not exist.
 
@@ -42,20 +42,19 @@ The sample ID can also be used to add more of the original metadata to the datas
 
 To retrieve the FASTQ files from both projects, a custom [ENA data helper module](real-world_gold-standard_data/Pf8-GenReMekong/scripts/ENA_data_helper.py) is provided alongside the Jupyter notebook. The notebook uses this module to search ENA by sample ID and to add search results back into the sample data tables. At the end of the notebook, a section is provided that creates input files for FASTQ download and demonstrates the use of the ENA data helper on the commandline for the purpose of retrieving the FASTQ files along with a manifest file.  
 
-## Simulated data
-While real-world data from public resources are an important part of any validation strategy, such data suffer from two main issues in the context of pipeline validation:  
-- data is generated using specific lab techniques that may not be be compatible with a given pipeline
-- inferred data such as drug-resistance phenotype, is generated by other pipelines. Even if those pipelines are published and highly trusted, the ground truth cannot be verified
+## Approach 2: Synthetic data
+While real-world data from public resources are an important part of any validation strategy, such data suffer from some issues in the context of pipeline validation, such as:  
+- Real data may not exist to cover all the different configurations that you wish to test in your pipeline 
+- Data is generated using specific lab techniques that may not be be compatible with a given pipeline
+- When developing a pipeline for a specific assay (e.g. that based on enrichment of specific genomic loci), high quality real data may not be yet available for validation. 
 
-To address these issues, we are providing tools and recipes for the creation of simulated data, as well as some example datasets.  
-Simulated data can be made to match the expected input of a given pipeline. For example, a pipeline that expects AmpSeq data that was created using a specific amplicon primer panel should be validated against sequencing data obtained by using that same primer panel. High-quality reference data may not be available in such a case. With simulation, the right type of data can be constructed and known genotypes can be constructed to verify the results of the pipeline run against a ground truth dataset.
+We have therefore provides some tools and recipes for the creation of designed synthetic data sets (by simulation). To demonstrate the use of these tools, we have applied them to the generation of synthetic validation data set for the SPOTMalaria panel and [associated pipeline](https://github.com/genomic-surveillance/AmpRecon) . This data set has been submitted to ENA under BioProject XXXXXX. 
 
 ### Recipe and tools for creating simulated dataset
-Elsewhere in this repository, we provide a [read simulation pipeline](https://github.com/advISO-project/pop_var_sim) that builds on published tools to facilitate the creation of simulated read datasets with known genotypes and the ability to simulate custom AmpSeq panels.  
 
-A [Jupyter](https://jupyter.org/) notebook is provided [here](simulated_data/prepare_simulation_run/scripts/prepare_files_for_simulation.ipynb). It contains a working recipe for creating a simulated read dataset. The recipe starts by using real-world data to obtain realistic guides for read counts to be simulated and provides detailed instructions on how to produce the configuration files that are required by the [read simulation pipeline](https://github.com/advISO-project/pop_var_sim) from information that is publicly available.  
+We have created a pipeline, [pop_var_sim](https://github.com/advISO-project/pop_var_sim) that builds on published tools to facilitate the creation of simulated read datasets with known genotypes and the ability to simulate custom AmpSeq panels.  
+
+A [Jupyter](https://jupyter.org/) notebook is provided [here](synthetic_data/prepare_simulation_run/scripts/prepare_simulation.ipynb). It describes the design of the synthetic data set, and includes code for generating the required input files and configuration for pop_var_sim. 
 
 ### How to use the simulated data
-The notebook includes a command that the user can run locally to produce simulated read FASTQ files with the configuration provided by the recipe in the notebook. This creates a specific set of FASTQ files for WT and a mutant genotype, based on the read counts obtained from high-quality real-world data. While this may be useful as-is, the main aim of the simulation recipe is to provide a template for users to build their own recipes and datasets, tailor-made for their specific pipeline needs.   
-
-For example, the recipe shows how to use a published set of amplicon primer positions to simulate a run with that primer panel. In order to transfer this to a different panel, primer positions need to be obtained from different sources. This may require mapping of primer sequences to the reference genome, depending on the data available for the specific panel. The recipe also shows how a mutant that is provided in the form of an amino acid position in a named gene can be transformed into the vcf-like format of genomic positions and SNP details required by the simulation pipeline.  
+TODO
