@@ -1,4 +1,4 @@
-# A resource for malaria gold-standard validation data
+# Methodology and datasets for validating pipelines that predict the drug-resistance status of Plasmodium falciparum samples using sequencing
 
 ## Introduction
 The aim of this resource is to provide datasets that may be used in validating bioinformatics pipelines that use genomic data to infer the drug resistance status of Plasmodium falciparum samples. Validation and verification of pipelines are key activities in the ISO accreditation.   
