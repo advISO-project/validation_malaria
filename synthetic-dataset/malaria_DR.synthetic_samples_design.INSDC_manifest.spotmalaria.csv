@@ -1,4 +1,4 @@
-sample,sample_acc,library,experiment_acc,run_acc
+sample,sample_accession,library_name,experiment_accession,run_accession
 Pf_All_mut,ERS29452721,Pf_All_mut_GRC1,ERX16214130,ERR16822052
 Pf_All_mut,ERS29452721,Pf_All_mut_GRC2,ERX16214131,ERR16822053
 Pf_All_mut,ERS29452721,Pf_All_mut_SPEC,ERX16214133,ERR16822055

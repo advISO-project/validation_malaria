@@ -37,17 +37,31 @@ While real-world data from public resources are an important part of any validat
 - The associated data was generated using specific lab techniques and assays, which broadly limits their use to pipelines designed to work with that specific type of data
 - When developing a pipeline for a novel/new assay (e.g. that based on enrichment of specific genomic loci), high quality real data may not be yet available for validation. 
 
-We have therefore provides some tools and recipes for the creation of designed synthetic data sets (by simulation). To demonstrate the use of these tools, we have applied them to the generation of synthetic validation data set for the aforementioned SpotMalaria panel. This data set has been submitted to ENA under BioProject [PRJEB109256](https://www.ebi.ac.uk/ena/browser/view/PRJEB109256). 
+We have therefore provides some tools and recipes for the creation of designed synthetic data sets (by simulation). To demonstrate the use of these tools, we have applied them to the generation of synthetic validation data set for the aforementioned SpotMalaria panel. 
 
 ### Recipe and tools for creating simulated dataset
 
-We have created a pipeline, [pop_var_sim](https://github.com/advISO-project/pop_var_sim) that builds on published tools to facilitate the creation of simulated read datasets with known genotypes and the ability to simulate custom AmpSeq panels.  A Jupyter [notebook](synthetic_data/prepare_simulation_run/scripts/prepare_simulation.ipynb) describes the design of the synthetic data set, and includes code for generating the required input files and configuration for pop_var_sim. 
+Our pipeine, [pop_var_sim](https://github.com/advISO-project/pop_var_sim), builds on published tools to facilitate the creation of simulated read datasets with known genotypes and the ability to simulate custom AmpSeq panels.  A Jupyter [notebook](synthetic_data/prepare_simulation_run/scripts/prepare_simulation.ipynb) describes the design of the synthetic data set, and includes code for generating the required input files and configuration for pop_var_sim. 
 
-### Description of the dataset
+### Description of the resulting dataset
 
 The dataset has been designed to capture a variety of haplotypes that confer resistance or sensitivity to a number of the drugs used in malaria treatment. This [spreadsheet](synthetic-dataset/malaria_DR.synthetic_samples_design.v1.csv) records the hapolotype and resistance profile for each synthetic sample. A second [spreadsheet](synthetic-dataset/malaria_DR.synthetic_samples_design.v1.INSDC_manifest.csv) records the ENA sample, experiment and run accessions for the three synthetic libraries associated with the SPOT malaria sub-panels (GRC1, GRC2, SPEC).
 
-### Notes on using the dataset with AmpRecon
+The data set has been submitted to ENA under a single BioProject [PRJEB109256](https://www.ebi.ac.uk/ena/browser/view/PRJEB109256)/
+
+## Working with the datasets
+
+### Downloading 
+
+There are various ways to download the fastq run data associated with the above datasets (e.g. from NCBI or ENA). We have provided a convenience script that downloads the data sequentially from ENA. This works perfectly well for the SpotMalaria (amplicon) data, but will take much longer for the Pf8 (WGS) data; for that, you may wish to consider other methods if you are impatient. 
+
+The command creates a folder (--out) into which the FASTQ file pairs are written. It also creates a manifest file that lists run accessions, remote FTP URLs and local (absolute) file paths to the downloaded FASTQ files. Example usage for downloading the real-world representative genotypes SpotMalaria dataset: 
+
+```
+lib/ENA_data_helper.py download --insdc_manifest Pf8-GenReMekong_concordant_genotypes_representative_samples.INSDC_manifest.spotmalaria.csv --output_folder <fastq_output_folder>
+```
+
+### Using the datasets with AmpRecon
 
 The dataset can be used with any bioinformatics pipeline that processes data from the SpotMalaria amplicon panel (and indeed to validate new pipelines designed for SpotMalaria). However, the current reference pipeline for SPOT malaria - [AmpRecon](https://github.com/genomic-surveillance/AmpRecon) - has certain quirks which require some manipulation of the dataset before it can be used. Specifically, we need to:
 
@@ -58,7 +72,7 @@ We have provided a script to simplify this task:
 
 ```
 lib/prep_fqs_and_manifest_for_amprecon.py \
-    --insdc_manifest synthetic-dataset/malaria_DR.synthetic_samples_design.v1.INSDC_manifest.csv \
-    --insdc_fastq_folder <path_to_where_fastqs_where_download> \
+    --insdc_manifest synthetic-dataset/malaria_DR.synthetic_samples_design.v1.INSDC_manifest.spot_malaria.csv \
+    --insdc_fastq_folder <path_to_where_fastqs_were_download> \
     --output_folder <path_to_where_collated_fastqs_and_AmpRecon_manifest will be written>
 ```

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 this module provides functions to search ENA for samples by sample ID, which are used in the 
 Jupyter notebook pf8genre.ipynb in the same folder.  
@@ -40,12 +41,12 @@ def args_parser():
     download_parser.set_defaults( func = cli_download_fastqs )
 
     download_parser.add_argument(
-        '--data','-d',
+        '--insdc_manifest','-i',
         action = 'store',
         required = True,
         metavar = 'FILE', 
         type = str,
-        help='path to the dataset csv file. The file must contain a column "sample"')
+        help='path to the insdc manifest data file.')
 
     download_parser.add_argument(
         '--out','-o',
@@ -75,41 +76,28 @@ def args_parser():
         type = int,
         help='Optional number of attempts to try FTP downloads. Defaults to 3')
 
-    download_parser.add_argument(
-        '--no_manifest',
-        action = 'store_true',
-        help ='do not create a manifest file in the output directory'
-    )
-    
-    download_parser.add_argument(
-        '--ftp_url_read_1_col',
-        action = 'store',
-        default= 'ftp_url_read_1',
-        required = False, 
-        type = str,
-        help='Name of the read 1 FTP URL column, if not "ftp_url_read_1"')
-        
-    download_parser.add_argument(
-        '--ftp_url_read_2_col',
-        action = 'store',
-        default= 'ftp_url_read_2',
-        required = False, 
-        type = str,
-        help='Name of the read 2 FTP URL column, if not "ftp_url_read_2"')
-    
-        
-    download_parser.add_argument(
-        '--run_accession_col',
-        action = 'store',
-        default= 'run_accession',
-        required = False, 
-        type = str,
-        help='Name of the run accession column, if not "run_accession"')
-
     return parser
 
+def create_ena_data_frame_from_bioproject(bioproject:str):
+    """
+    Takes a BioProject id, and returns a new dataframe with ENA run data
+    
+    Args:
+        bioproject (str): INSDC Bioproject
 
-def create_ena_data_frame(df:pd.DataFrame, sample_id_col_name:str='sample', chunk_size:int=50):
+    Returns:
+        pandas.DataFrame: A new DataFrame that contains the input sample IDs as well as the  
+        following data fields from ENA:
+        run_accession,study_accession,sample_accession,sample_title,submitted_ftp
+
+    """  
+    fields = ['study_accession','sample_accession','sample_title','experiment_accession','run_accession','submitted_ftp']
+    query = _build_ena_bioproject_query(bioproject=bioproject)
+    ena_data = _parse_ena_response( _search_ena(query , return_fields=fields, limit=0) )
+
+    return ena_data
+
+def create_ena_data_frame_from_samples(df:pd.DataFrame, sample_id_col_name:str='sample', chunk_size:int=50):
     """
     Takes a DataFrame with a sample ID column (default name 'sample') and searches 
     ENA by sample ID ('sample_title' field in ENA). Returns a new dataframe with sample ID 
@@ -118,7 +106,7 @@ def create_ena_data_frame(df:pd.DataFrame, sample_id_col_name:str='sample', chun
 
     Args:
         df (pandas.DataFrame): A pandas DataFrame. Only needs a single column for sample IDs.  
-            By default, this is expected to eb called 'sample' but can be changed. Other data  
+            By default, this is expected to be called 'sample' but can be changed. Other data  
             is ignored.  
         sample_id_col_name (str): Name of the sample ID column, defaults to 'sample'
         chunk_size (int): number of samples queried in one request. If the total number of 
@@ -138,7 +126,7 @@ def create_ena_data_frame(df:pd.DataFrame, sample_id_col_name:str='sample', chun
             f'DataFrame is missing sample ID column, expected name {sample_id_col_name} ' +
             '(can be changed with param "sample_id_col_name")')
     
-    fields = ['sample_title','run_accession','read_count','center_name','library_strategy','sample_accession','fastq_ftp','submitted_ftp']
+    fields = ['run_accession','experiment_accession', 'study_accession', 'sample_title','read_count','center_name','library_strategy','sample_accession']
     
     # split the list of sample IDs into chunks of max_chunk_size IDs each in order 
     # to avoid an exception due to URLs becoming too long
@@ -146,7 +134,8 @@ def create_ena_data_frame(df:pd.DataFrame, sample_id_col_name:str='sample', chun
     
     ena_dfs=[]
     for sample_ids_chunk in sample_id_chunks:
-        ena_response = _search_ena(samples=sample_ids_chunk, return_fields=fields)
+        ena_query = _build_ena_sample_query(sample_ids_chunk)
+        ena_response = _search_ena(query=ena_query, return_fields=fields)
         ena_dfs.append(_parse_ena_response(ena_response))
     ena_data = pd.concat(ena_dfs)
     
@@ -154,7 +143,50 @@ def create_ena_data_frame(df:pd.DataFrame, sample_id_col_name:str='sample', chun
     ena_data.rename(columns={'sample_title': sample_id_col_name}, inplace=True)
     return ena_data
 
-def _search_ena(samples:list, return_fields:list, limit:int=10000):
+
+def create_ena_data_frame_from_run_accessions(df:pd.DataFrame, run_acc_col_name:str='run_accession', chunk_size:int=50):
+    """
+    Takes a DataFrame with a run_accession column (default name 'run_accession') and searches 
+    ENA by run acc ('run_accession' field in ENA). Returns a new dataframe with run accs and 
+    ftp download locations. 
+
+    Args:
+        df (pandas.DataFrame): A pandas DataFrame. Only needs a single column for run accs.  
+        run_acc_col_name (str): Name of the run acc column, defaults to 'run_accession'
+        chunk_size (int): number of samples queried in one request. If the total number of 
+            run accs IDs is larger than this, the ENA query will be run in chunks.  
+            Defaults to 50.  
+
+    Returns:
+        pandas.DataFrame: A new DataFrame that contains the input run accs IDs as well as the  
+        following data fields from ENA:
+        'fastq_ftp',
+
+    """
+    try:
+        run_accs=df[run_acc_col_name].tolist()
+    except KeyError:
+        raise ValueError(
+            f'DataFrame is missing run accession column, expected name {run_acc_col_name} ' +
+            '(can be changed with param "run_acc_col_name")')
+    
+    fields = ['run_accession','fastq_ftp']
+    
+    # split the list of accs into chunks of max_chunk_size IDs each in order 
+    # to avoid an exception due to URLs becoming too long
+    run_acc_chunks = [run_accs[i:i + chunk_size] for i in range(0, len(run_accs), chunk_size)]
+    
+    ena_dfs=[]
+    for run_acc_chunk in run_acc_chunks:
+        ena_query = _build_ena_run_acc_query(run_acc_chunk)
+        ena_response = _search_ena(query=ena_query, return_fields=fields)
+        ena_dfs.append(_parse_ena_response(ena_response))
+    ena_data = pd.concat(ena_dfs)
+    
+    return ena_data
+
+
+def _search_ena(query:str, return_fields:list, limit:int=10000):
     """
     Run a search with the ENA API, querying by sample ID and return the search results response  
     in raw text form. 
@@ -172,7 +204,7 @@ def _search_ena(samples:list, return_fields:list, limit:int=10000):
     ENA_SEARCH_BASE_URL='https://www.ebi.ac.uk/ena/portal/api/search'
     search_params = {
         'result': 'read_run',
-        'query': _build_ena_query(samples),
+        'query': query,
         'fields': ','.join(return_fields),
         'limit': limit
     }
@@ -192,7 +224,7 @@ def _parse_ena_response(response_text:str):
     """
     return pd.read_csv(StringIO(response_text), sep="\t")
     
-def _build_ena_query(samples:list):
+def _build_ena_sample_query(samples:list):
     """
     Create the query string for the ENA search request.  
     The format of the query string is detailed here:
@@ -203,17 +235,39 @@ def _build_ena_query(samples:list):
     """
     return '(' + ' OR '.join([f'sample_title="{sample}"' for sample in samples ]) + ')'
 
-
-def merge_ena_results_into_sample_data_genre_pf8(sample_data:pd.DataFrame, ena_result:pd.DataFrame,  sample_id_col_name:str='sample', skip_errors:bool=False, include_download_link:bool=True):
+def _build_ena_run_acc_query(run_accs:list):
     """
-    Merges ENA results, where one sample is expected to have more than one "run accession", 
-    into a DataFrame where sample ID is unique (index).  
+    Create the query string for the ENA search request.  
+    The format of the query string is detailed here:
+    https://docs.google.com/document/d/1CwoY84MuZ3SdKYocqssumghBF88PWxUZ
+
+    Args:
+        run_accs (list): list of run accessions
+    """
+    return '(' + ' OR '.join([f'run_accession="{run_acc}"' for run_acc in run_accs ]) + ')'
+
+
+def _build_ena_bioproject_query(bioproject:str):
+    """
+    Create the query string for the ENA search request.  
+    The format of the query string is detailed here:
+    https://docs.google.com/document/d/1CwoY84MuZ3SdKYocqssumghBF88PWxUZ
+
+    Args:
+        samples (list): list of sample IDs
+    """
+    return "study_accession=" + bioproject
+
+
+def align_ena_results_with_sample_data_genre_pf8(sample_data:pd.DataFrame, ena_result:pd.DataFrame, genre_panel_map:dict, sample_id_col_name:str='sample', skip_errors:bool=False):
+    """
+    Align ENA results, where one sample is expected to have more than one "run accession", 
+    with sample data (which has one row per sample).  
     Data is assigned to Pf8 or GenRe based on the information in column 'center_name'.  
     A sanity check id performed against column 'library_strategy' (Pf8 data should be WGS, GenRe 
-    should be AMPLICON). The GenRe panel is extracted from the submitted cram file names in 
-    'submitted_ftp'. THIS INFORMATION IS NOT AVAILABLE ELSEWHERE IN THE RECORD!
-    If download links are to be included, two mate FASTQ files are expected in 
-    field 'fastq_ftp'.  
+    should be AMPLICON). The GenRe panel is extracted from auxilliary dataframe that maps
+    run accessions to panel (this information is not reliably found in the ENA records, so 
+    must be provided externally). 
     
     NOTE
     Unlike other functions in this module, this function is only applicable to the GenRe/Pf8 
@@ -221,20 +275,16 @@ def merge_ena_results_into_sample_data_genre_pf8(sample_data:pd.DataFrame, ena_r
     data.  
     In this case, we expect every sample to have one "run accession" for each of the three 
     AmpSeq panels (GRC1, GRC2, SPEC) in GenRe plus one for Pf8 WGS.
-    We create 4 new columns accordingly:  
-        - ENA_acc_GenRe_GRC1
-        - ENA_acc_GenRe_GRC2
-        - ENA_acc_GenRe_SPEC
-        - ENA_acc_Pf8
+    We create 4 pairs of new columns accordingly:  
+        - INSDC_GenRe_GRC1, INSDC_GenRe_GRC1_readcount
+        - INSDC_GenRe_GRC2, INSDC_GenRe_GRC2_readcount,
+        - INSDC_GenRe_SPEC, INSDC_GenRe_SPEC_readcount,
+        - INSDC_Pf8, INSDC_Pf8_readcount
+    A version of the input ENA data frame is also returned that:
+        - is filtered to only include retained samples; and 
+        - has an additional library_name column, formed from the sample name and panel name (where 
+          "WGS" is used as the panel name for Pf8)
         
-    If include_download_link is used (default), the following 8 additional columns are added, 
-    which contain the FTP download links for the FASTQ files (mate 1 and 2) corresponding to the ENA 
-    run accession IDs:
-        - GenRe_GRC1_ENA_FASTQ_FTP_1 / GenRe_GRC1_ENA_FASTQ_FTP_2
-        - GenRe_GRC2_ENA_FASTQ_FTP_1 / GenRe_GRC2_ENA_FASTQ_FTP_2
-        - GenRe_SPEC_ENA_FASTQ_FTP_1 / GenRe_SPEC_ENA_FASTQ_FTP_2
-        - Pf8_ENA_FASTQ_FTP_1 / Pf8_ENA_FASTQ_FTP_2
-
     Args:
         ena_result (pandas.DataFrame): a DataFrame of ENA search results, expected to contain results for 
             4 run accessions per sample ID.  
@@ -243,19 +293,15 @@ def merge_ena_results_into_sample_data_genre_pf8(sample_data:pd.DataFrame, ena_r
                 -run_accession
                 -center_name
                 -library_strategy
-                -submitted_ftp
-                -fastq_ftp (if include_download_link in use)
         sample_data (pandas.DataFrame): a DataFrame of the original sample data, where each sample ID is unique 
             and into which the ENA data is to be merged
             sample_id_col_name (str): Name of the sample ID column, defaults to 'sample'
         skip_errors (bool): if True, failed dat sanity checks do not throw errors, data is just skipped
             defaults to False. 
-        include_download_link (bool): if True (default), adds a column with the FTP download link for every 
-            run accession column
-
+  
     Returns:
-        pandas.DataFrame): a new DataFrame based on sample_data with extra columns as shown above. 
-    
+        pandas.DataFrame: a new DataFrame based on sample_data with extra columns as shown above. 
+        pandas.DataFrame: a new DataFrame based on ena_result, restricted to entries with sample in the first dataframe 
     """
     if not sample_id_col_name in sample_data or not sample_id_col_name in ena_result:
         raise ValueError('both DataFrames need to have a column "sample"')
@@ -269,24 +315,14 @@ def merge_ena_results_into_sample_data_genre_pf8(sample_data:pd.DataFrame, ena_r
     new_df['INSDC_GenRe_GRC2_readcount'] = None
     new_df['INSDC_GenRe_SPEC'] = None
     new_df['INSDC_GenRe_SPEC_readcount'] = None
-
-    if include_download_link:
-        for i in [1,2]:
-            new_df['GenRe_GRC1_ENA_FASTQ_FTP_'+str(i)] = None
-            new_df['GenRe_GRC2_ENA_FASTQ_FTP_'+str(i)] = None
-            new_df['GenRe_SPEC_ENA_FASTQ_FTP_'+str(i)] = None
-            new_df['Pf8_ENA_FASTQ_FTP_'+str(i)] = None
-
+  
     for _,row in ena_result.iterrows():
         try:
             sample = row[sample_id_col_name]
             run_accession = row['run_accession']
             center = row['center_name']
             strategy = row['library_strategy']
-            submitted_ftp = row['submitted_ftp']
             readcount = row['read_count']
-            if include_download_link:
-                fastq_ftp = row['fastq_ftp']
         except KeyError as e:
             raise ValueError(f'ENA result DataFrame is missing required column: {e}')
         
@@ -307,12 +343,9 @@ def merge_ena_results_into_sample_data_genre_pf8(sample_data:pd.DataFrame, ena_r
                     print(msg + ' - skip_errors active, skipping this row')
                 else:
                     raise ValueError(msg)
-            if 'GRC1' in submitted_ftp:
-                run_accession_type='GenRe_GRC1'
-            elif 'GRC2' in submitted_ftp:
-                run_accession_type='GenRe_GRC2'
-            elif 'SPEC' in submitted_ftp:
-                run_accession_type= 'GenRe_SPEC'
+                
+            if genre_panel_map[run_accession]:
+                run_accession_type = "GenRe_" + genre_panel_map[run_accession]
             else:
                 msg=f'could not extract primer panel from GenRe data row: {row}'
                 if skip_errors:
@@ -336,20 +369,17 @@ def merge_ena_results_into_sample_data_genre_pf8(sample_data:pd.DataFrame, ena_r
             # ENA read counts are summed over both ends in paired end. So need to divide by two to get 
             # number of read pairs (which is almost always what we want)
             new_df.loc[new_df['sample'] == sample, readcount_col]=readcount / 2
-            if include_download_link:
-                if not ';' in fastq_ftp:
-                    raise ValueError(f'FASTQ FTP field in this row does not contain 2 links: {row}')
-                for i, ftp_url in enumerate(fastq_ftp.split(';')):
-                    ftp_url.strip()
-                    if not ftp_url.startswith('ftp://'):
-                        ftp_url = 'ftp://'+ftp_url
-                    ftp_col = run_accession_type+'_ENA_FASTQ_FTP_'+str(i+1)
-                    new_df.loc[new_df['sample'] == sample, ftp_col]=ftp_url
+ 
+    new_df = new_df[
+        new_df[['INSDC_GenRe_GRC1','INSDC_GenRe_GRC2','INSDC_GenRe_SPEC','INSDC_Pf8']].notnull().all(1)
+    ]
+    new_ena_df = ena_result[ena_result["sample"].isin(new_df["sample"])]
+    new_ena_df["library_name"] = new_ena_df["sample"] + "_" + new_ena_df["run_accession"].map(lambda x: genre_panel_map.get(x, "WGS"))
 
-    return new_df
+    return new_df,new_ena_df
 
 
-def download_all_fastqs(outdir, data:pd.DataFrame=None, data_file_path:str=None, create_manifest:bool=True, num_tries:int=3, ftp_url_read_1_col:str='ftp_url_read_1',ftp_url_read_2_col:str='ftp_url_read_2',run_accession_col:str='run_accession',skip_errors:bool=False,top3:bool=False):
+def download_all_fastqs(outdir, data:pd.DataFrame=None, data_file_path:str=None, num_tries:int=3,skip_errors:bool=False,top3:bool=False):
     """
     Download the FASTQ files from a table of FTP URLs, which can be provided as a DataFrame or a path to a 
     csv file. The file must contains a column for the ENA run accession and one column each for the FASTQ 
@@ -360,17 +390,9 @@ def download_all_fastqs(outdir, data:pd.DataFrame=None, data_file_path:str=None,
     The output directory will be created and must not exist already.  
 
     Args:
-        data (pandas.DataFrame): DataFrame with run_accession and read1/2 FTP URLs to download from
-        data_file_path (str): path to a csv file with the run_accession and FTP URLs 
+        data (pandas.DataFrame): DataFrame with run_accessions 
+        data_file_path (str): path to a csv file with the run_accessions 
         outdir (str): path to output dir (must not exist yet)
-
-        ftp_url_read_1_col (str): name of the column in {data} that contains the read 1 FTP URLs,  
-            defaults to 'ftp_url_read_1'
-        ftp_url_read_2_col (str): name of the column in {data} that contains the read 2 FTP URLs,  
-            defaults to 'ftp_url_read_2'
-        run_accession_col (str): name of the column in {data} that contains run accession IDs, 
-            defaults to 'run_accession'
-        create_manifest (bool): if True, a manifest file is created in {outdir}
         skip_errors (bool): if True, skip download errors and continue with next time, don't throw exception. 
         top3 (bool): if True, only process the first 3 rows of the data (useful for testing)
         
@@ -387,46 +409,36 @@ def download_all_fastqs(outdir, data:pd.DataFrame=None, data_file_path:str=None,
         raise ValueError('must provide either "data" or "data_file_path" parameter, not both')
     if data_file_path:
         data = pd.read_csv(data_file_path)
-    
+
+    ena_locs_df = create_ena_data_frame_from_run_accessions( data )
+ 
     outdir = pathlib.Path(outdir)
     outdir.mkdir(parents=True, exist_ok=True)
-    
-    if create_manifest:
-        manifest_path = outdir / 'manifest.csv'
-        fields = 'run_accession','ftp_url_read_1','ftp_url_read_2','read_1_file','read_2_file'
-        manifest_fh = open(manifest_path, 'w', newline='')
-        manifest_writer = csv.DictWriter(manifest_fh, fieldnames=fields)
-        manifest_writer.writeheader()
-    
-    n_rows = len(data)
+       
+    n_rows = len(ena_locs_df)
     i = 0
-    for _, row in data.iterrows():
+    for _, row in ena_locs_df.iterrows():
         i+=1
         if top3 and i>3:
             print("option top3 in use: stopping after three rows processed")
             break
-        try:
-            run_accession = row[run_accession_col]
-            ftp_url_read_1 = row[ftp_url_read_1_col]
-            ftp_url_read_2 = row[ftp_url_read_2_col]
-        except KeyError:
-            raise ValueError(f'data is missing columns. Make sure the following columns exist: {", ".join([run_accession_col, ftp_url_read_1_col, ftp_url_read_2_col])}')
-        read_1_file = _download_fastq_file( ftp_url_read_1, outdir, num_tries=num_tries, skip_errors=skip_errors)
-        read_2_file = _download_fastq_file( ftp_url_read_2, outdir, num_tries=num_tries, skip_errors=skip_errors)
-        print(f'downloaded FASTQ pair {i} of {n_rows}')
-            
-        if create_manifest:
-            manifest_writer.writerow({
-                'run_accession': run_accession,
-                'ftp_url_read_1': ftp_url_read_1,
-                'ftp_url_read_2': ftp_url_read_2,
-                'read_1_file': read_1_file,
-                'read_2_file': read_2_file
-            })
-        
-    if create_manifest:
-        manifest_fh.close()
+
+        fastq_ftp = row["fastq_ftp"]
+        if not ';' in fastq_ftp:
+            raise ValueError(f'FASTQ FTP field in this row does not contain 2 links: {row}')
     
+        fq_url_1, fq_url_2 = fastq_ftp.split(';')
+        fq_url_1.strip()
+        if not fq_url_1.startswith('ftp://'):
+                fq_url_1 = 'ftp://' + fq_url_1
+        fq_url_2.strip()
+        if not fq_url_2.startswith('ftp://'):
+                fq_url_2 = 'ftp://' + fq_url_2
+
+        _download_fastq_file( fq_url_1, outdir, num_tries=num_tries, skip_errors=skip_errors)
+        _download_fastq_file( fq_url_2, outdir, num_tries=num_tries, skip_errors=skip_errors)
+        print(f'downloaded FASTQ {i} of {n_rows}')
+               
     return True
 
 def _download_fastq_file( remote_ftp_url:str, dir, num_tries:int=3, skip_errors:bool=False):
@@ -480,12 +492,8 @@ def cli_download_fastqs(args):
     """
     download_all_fastqs(
         outdir=args.out,
-        data_file_path=args.data,
-        create_manifest= not args.no_manifest,
+        data_file_path=args.insdc_manifest,
         num_tries=args.download_attempts,
-        ftp_url_read_1_col=args.ftp_url_read_1_col,
-        ftp_url_read_2_col=args.ftp_url_read_2_col,
-        run_accession_col=args.run_accession_col,
         skip_errors=args.skip_errors,
         top3=args.top3
     )
