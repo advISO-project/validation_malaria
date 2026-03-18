@@ -49,7 +49,7 @@ def args_parser():
         help='path to the insdc manifest data file.')
 
     download_parser.add_argument(
-        '--out','-o',
+        '--output_folder','-o',
         action = 'store',
         required = True,
         metavar = 'DIR', 
