@@ -491,7 +491,7 @@ def cli_download_fastqs(args):
     CLI function to run download_all_fastqs
     """
     download_all_fastqs(
-        outdir=args.out,
+        outdir=args.output_folder,
         data_file_path=args.insdc_manifest,
         num_tries=args.download_attempts,
         skip_errors=args.skip_errors,
