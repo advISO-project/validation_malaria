@@ -17,10 +17,10 @@ Agreement between Pf8 and GenRe Mekong identifies samples for which two distinct
 
 ### Construction outputs
 1. An intermediate set of 904 samples where all genotype-derived resistance classifications are identical between the two projects: [Pf8-GenReMekong_concordant_phenotypes.csv](real-world-dataset/Pf8-GenReMekong_concordant_phenotypes.csv)
-2. The 836-record publication candidate: the subset of (1) for which all selected amino-acid and normalised kelch13 calls are also concordant and non-missing: [Pf8-GenReMekong_concordant_genotypes.csv](real-world-dataset/Pf8-GenReMekong_concordant_genotypes.csv)
-3. A deterministic convenience selection of 74 samples from (2), with one sample for each distinct pattern of the selected genotype calls: [Pf8-GenReMekong_concordant_genotypes_representative_samples.csv](real-world-dataset/Pf8-GenReMekong_concordant_genotypes_representative_samples.csv)
+2. An eligible population of 836 samples: the subset of (1) for which all selected amino-acid and normalised kelch13 calls are also concordant and non-missing: [Pf8-GenReMekong_concordant_genotypes.csv](real-world-dataset/Pf8-GenReMekong_concordant_genotypes.csv)
+3. The 74-sample publication set selected deterministically from (2), with one sample for each distinct pattern of the selected genotype calls: [Pf8-GenReMekong_concordant_genotypes_representative_samples.csv](real-world-dataset/Pf8-GenReMekong_concordant_genotypes_representative_samples.csv)
 
-The 904- and 74-record tables are construction artefacts rather than separate publication candidates. The published real-world dataset will be based on the 836 records and will identify the 74 selected representatives with a contextual boolean field.
+The 74-record table is the publication target; the 904- and 836-record tables remain construction artefacts that document how it was derived. The published set covers every distinct observed pattern across the 22 included genotype fields, but it is not intended to represent the source population or the technical variation within it. Selecting one sample per pattern removes information about pattern frequencies and repeated observations, and does not deliberately preserve the range or balance of sequencing coverage, read quality, country, or AmpSeq process found among the 836 eligible samples.
 
 Full details on how these datasets were created from public sources is provided in the form of an executable Jupyter notebook [pf8genre.ipynb](real-world-dataset/notebook/pf8genre.ipynb). 
 
@@ -49,13 +49,40 @@ The dataset contains designed marker combinations selected to exercise resistanc
 
 The data set has been submitted to ENA under a single BioProject [PRJEB109256](https://www.ebi.ac.uk/ena/browser/view/PRJEB109256)/
 
+## Preparing publication bundles
+
+Two scripts convert the construction outputs into the canonical format used by
+`validation_datasets`:
+
+```text
+lib/publish_real_world_dataset.py --output-dir <real-output-directory>
+lib/publish_synthetic_dataset.py --output-dir <synthetic-output-directory>
+```
+
+The scripts generate `dataset_manifest.json`, `comparison_reference.json`,
+`comparison-configuration.template.yaml`, and `checksums.sha256`. If the output
+directory already contains the human-maintained `README.md`, `CHANGELOG.md`, or
+`LICENCE.md`, those files are left unchanged and included in the generated
+checksums. Existing generated files are not replaced unless `--overwrite` is
+specified.
+
+The publication scripts use the source files in this repository by default,
+accept an alternative `--source-dir`, and expose release metadata such as
+`--version`, `--licence`, and `--construction-revision` as command-line options.
+They fail if record counts, source vocabularies, genotype-pattern selection,
+artifact associations, or other agreed construction invariants have changed.
+This is intentional: a changed source release must be reviewed before a new
+validation dataset version is published. For the real-world dataset, the
+publication script emits the 74 genotype-pattern coverage records and uses the
+836-record table to verify their eligibility and deterministic selection.
+
 ## Working with the datasets
 
 ### Downloading 
 
 There are various ways to download the fastq run data associated with the above datasets (e.g. from NCBI or ENA). We have provided a convenience script that downloads the data sequentially from ENA. This works perfectly well for the SpotMalaria (amplicon) data, but will take much longer for the Pf8 (WGS) data, for which the files are much larger; for that, you may wish to consider other methods if you are impatient. 
 
-The command creates a folder (--output_folder) into which the FASTQ file pairs are written. It also creates a manifest file that lists run accessions, remote FTP URLs and local (absolute) file paths to the downloaded FASTQ files. Example usage for downloading the real-world representative genotypes SpotMalaria dataset: 
+The command creates a folder (--output_folder) into which the FASTQ file pairs are written. It also creates a manifest file that lists run accessions, remote FTP URLs and local (absolute) file paths to the downloaded FASTQ files. Example usage for downloading the real-world genotype-pattern coverage dataset for SpotMalaria:
 
 ```
 lib/ENA_data_helper.py download --insdc_manifest Pf8-GenReMekong_concordant_genotypes_representative_samples.INSDC_manifest.spotmalaria.csv --output_folder <fastq_output_folder>
