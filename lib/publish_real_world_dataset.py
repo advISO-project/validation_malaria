@@ -30,52 +30,46 @@ EXPECTED_PUBLICATION_RECORDS = 74
 
 GENOTYPE_COLUMNS = OrderedDict(
     [
-        ("core_mutation_dhfr_51", "dhfr_51_amino_acid_states"),
-        ("core_mutation_dhfr_59", "dhfr_59_amino_acid_states"),
-        ("core_mutation_dhfr_108", "dhfr_108_amino_acid_states"),
-        ("core_mutation_dhfr_164", "dhfr_164_amino_acid_states"),
-        ("core_mutation_crt_72", "crt_72_amino_acid_states"),
-        ("core_mutation_crt_74", "crt_74_amino_acid_states"),
-        ("core_mutation_crt_75", "crt_75_amino_acid_states"),
-        ("core_mutation_crt_76", "crt_76_amino_acid_states"),
-        ("core_mutation_crt_326", "crt_326_amino_acid_states"),
-        ("core_mutation_crt_356", "crt_356_amino_acid_states"),
-        ("core_mutation_dhps_436", "dhps_436_amino_acid_states"),
-        ("core_mutation_dhps_437", "dhps_437_amino_acid_states"),
-        ("core_mutation_dhps_540", "dhps_540_amino_acid_states"),
-        ("core_mutation_dhps_581", "dhps_581_amino_acid_states"),
-        ("core_mutation_dhps_613", "dhps_613_amino_acid_states"),
-        ("core_mutation_mdr1_86", "mdr1_86_amino_acid_states"),
-        ("core_mutation_mdr1_184", "mdr1_184_amino_acid_states"),
-        ("core_mutation_mdr1_1246", "mdr1_1246_amino_acid_states"),
-        ("core_mutation_mdr2_484", "mdr2_484_amino_acid_states"),
-        ("core_mutation_fd_193", "fd_193_amino_acid_states"),
-        ("core_mutation_arps10_127", "arps10_127_amino_acid_states"),
+        ("core_mutation_dhfr_51", "dhfr_51"),
+        ("core_mutation_dhfr_59", "dhfr_59"),
+        ("core_mutation_dhfr_108", "dhfr_108"),
+        ("core_mutation_dhfr_164", "dhfr_164"),
+        ("core_mutation_crt_72", "crt_72"),
+        ("core_mutation_crt_74", "crt_74"),
+        ("core_mutation_crt_75", "crt_75"),
+        ("core_mutation_crt_76", "crt_76"),
+        ("core_mutation_crt_326", "crt_326"),
+        ("core_mutation_crt_356", "crt_356"),
+        ("core_mutation_dhps_436", "dhps_436"),
+        ("core_mutation_dhps_437", "dhps_437"),
+        ("core_mutation_dhps_540", "dhps_540"),
+        ("core_mutation_dhps_581", "dhps_581"),
+        ("core_mutation_dhps_613", "dhps_613"),
+        ("core_mutation_mdr1_86", "mdr1_86"),
+        ("core_mutation_mdr1_184", "mdr1_184"),
+        ("core_mutation_mdr1_1246", "mdr1_1246"),
+        ("core_mutation_mdr2_484", "mdr2_484"),
+        ("core_mutation_fd_193", "fd_193"),
+        ("core_mutation_arps10_127", "arps10_127"),
         (
             "core_mutation_kelch13",
-            "kelch13_349_726_nonsynonymous_changes",
+            "kelch13_349_726_changes",
         ),
     ]
 )
 
 CLASSIFICATION_COLUMNS = OrderedDict(
     [
-        ("Artemisinin", "artemisinin_resistance_classification"),
-        ("Piperaquine", "piperaquine_resistance_classification"),
-        ("Mefloquine", "mefloquine_resistance_classification"),
-        ("Chloroquine", "chloroquine_resistance_classification"),
-        ("Pyrimethamine", "pyrimethamine_resistance_classification"),
-        ("Sulfadoxine", "sulfadoxine_resistance_classification"),
-        (
-            "DHA-PPQ",
-            "dihydroartemisinin_piperaquine_resistance_classification",
-        ),
-        ("AS-MQ", "artesunate_mefloquine_resistance_classification"),
-        ("S-P", "sulfadoxine_pyrimethamine_resistance_classification"),
-        (
-            "S-P-IPTp",
-            "sulfadoxine_pyrimethamine_iptp_resistance_classification",
-        ),
+        ("Artemisinin", "artemisinin"),
+        ("Piperaquine", "piperaquine"),
+        ("Mefloquine", "mefloquine"),
+        ("Chloroquine", "chloroquine"),
+        ("Pyrimethamine", "pyrimethamine"),
+        ("Sulfadoxine", "sulfadoxine"),
+        ("DHA-PPQ", "dha_ppq"),
+        ("AS-MQ", "as_mq"),
+        ("S-P", "sp"),
+        ("S-P-IPTp", "sp_iptp"),
     ]
 )
 
@@ -115,7 +109,7 @@ def _field_definitions() -> dict[str, dict[str, Any]]:
             allowed_values=CLASSIFICATIONS,
         )
     for _, field_name in GENOTYPE_COLUMNS.items():
-        if field_name == "kelch13_349_726_nonsynonymous_changes":
+        if field_name == "kelch13_349_726_changes":
             fields[field_name] = state_set_field(
                 "Concordant nonsynonymous kelch13 amino-acid changes from "
                 "residues 349 through 726; order has no meaning.",
@@ -125,10 +119,9 @@ def _field_definitions() -> dict[str, dict[str, Any]]:
                 ),
             )
             continue
-        marker = field_name.removesuffix("_amino_acid_states")
-        gene, residue = marker.rsplit("_", 1)
+        gene, residue = field_name.rsplit("_", 1)
         fields[field_name] = state_set_field(
-            f"Concordant {gene} amino-acid states at residue {residue}; "
+            f"Concordant {gene} amino acids at residue {residue}; "
             "order has no meaning."
         )
     fields["country"] = scalar_field(
@@ -265,7 +258,7 @@ def build_dataset(
                 genotype[source_name],
                 ",",
                 wild_type_is_empty=(
-                    field_name == "kelch13_349_726_nonsynonymous_changes"
+                    field_name == "kelch13_349_726_changes"
                 ),
             )
         record["country"] = country

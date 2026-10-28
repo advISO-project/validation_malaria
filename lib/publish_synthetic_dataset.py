@@ -27,33 +27,33 @@ EXPECTED_RECORDS = 25
 
 GENOTYPE_COLUMNS = OrderedDict(
     [
-        ("dhfr_51", "dhfr_51_amino_acid_states"),
-        ("dhfr_59", "dhfr_59_amino_acid_states"),
-        ("dhfr_108", "dhfr_108_amino_acid_states"),
-        ("dhfr_164", "dhfr_164_amino_acid_states"),
-        ("crt_76", "crt_76_amino_acid_states"),
-        ("dhps_437", "dhps_437_amino_acid_states"),
-        ("dhps_540", "dhps_540_amino_acid_states"),
-        ("dhps_581", "dhps_581_amino_acid_states"),
-        ("dhps_613", "dhps_613_amino_acid_states"),
-        ("kelch13_458", "kelch13_458_amino_acid_states"),
-        ("kelch13_493", "kelch13_493_amino_acid_states"),
-        ("kelch13_539", "kelch13_539_amino_acid_states"),
-        ("kelch13_543", "kelch13_543_amino_acid_states"),
-        ("kelch13_561", "kelch13_561_amino_acid_states"),
-        ("kelch13_580", "kelch13_580_amino_acid_states"),
-        ("kelch13_252", "kelch13_252_amino_acid_states"),
-        ("kelch13_578", "kelch13_578_amino_acid_states"),
+        ("dhfr_51", "dhfr_51"),
+        ("dhfr_59", "dhfr_59"),
+        ("dhfr_108", "dhfr_108"),
+        ("dhfr_164", "dhfr_164"),
+        ("crt_76", "crt_76"),
+        ("dhps_437", "dhps_437"),
+        ("dhps_540", "dhps_540"),
+        ("dhps_581", "dhps_581"),
+        ("dhps_613", "dhps_613"),
+        ("kelch13_458", "kelch13_458"),
+        ("kelch13_493", "kelch13_493"),
+        ("kelch13_539", "kelch13_539"),
+        ("kelch13_543", "kelch13_543"),
+        ("kelch13_561", "kelch13_561"),
+        ("kelch13_580", "kelch13_580"),
+        ("kelch13_252", "kelch13_252"),
+        ("kelch13_578", "kelch13_578"),
     ]
 )
 
 CLASSIFICATION_COLUMNS = OrderedDict(
     [
-        ("Artemisinin", "artemisinin_resistance_classification"),
-        ("Chloroquine", "chloroquine_resistance_classification"),
-        ("Pyrimethamine", "pyrimethamine_resistance_classification"),
-        ("Sulfadoxine", "sulfadoxine_resistance_classification"),
-        ("S-P", "sulfadoxine_pyrimethamine_resistance_classification"),
+        ("Artemisinin", "artemisinin"),
+        ("Chloroquine", "chloroquine"),
+        ("Pyrimethamine", "pyrimethamine"),
+        ("Sulfadoxine", "sulfadoxine"),
+        ("S-P", "sp"),
     ]
 )
 
@@ -77,10 +77,9 @@ def _field_definitions() -> dict[str, dict[str, Any]]:
             allowed_values=CLASSIFICATIONS,
         )
     for _, field_name in GENOTYPE_COLUMNS.items():
-        marker = field_name.removesuffix("_amino_acid_states")
-        gene, residue = marker.rsplit("_", 1)
+        gene, residue = field_name.rsplit("_", 1)
         fields[field_name] = state_set_field(
-            f"Designed {gene} amino-acid states at residue {residue}; "
+            f"Designed {gene} amino acids at residue {residue}; "
             "order has no meaning and mixture proportions and phase are not encoded."
         )
     return fields

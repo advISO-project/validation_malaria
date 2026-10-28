@@ -9,6 +9,7 @@ import pytest
 import yaml
 
 from publish_dataset_helpers import ConversionError, parse_state_set
+from publish_real_world_dataset import GENOTYPE_COLUMNS as REAL_GENOTYPE_COLUMNS
 from publish_real_world_dataset import main as publish_real_world
 from publish_synthetic_dataset import main as publish_synthetic
 
@@ -41,22 +42,17 @@ def test_real_world_publisher_converts_current_sources(tmp_path: Path) -> None:
     }
 
     by_id = {record["record_id"]: record for record in records}
-    assert by_id["RCN12025"]["artemisinin_resistance_classification"] == "resistant"
-    assert by_id["RCN12025"]["kelch13_349_726_nonsynonymous_changes"] == [
+    assert by_id["RCN12025"]["artemisinin"] == "resistant"
+    assert by_id["RCN12025"]["kelch13_349_726_changes"] == [
         "C580Y"
     ]
     assert any(
-        record["kelch13_349_726_nonsynonymous_changes"] == [] for record in records
+        record["kelch13_349_726_changes"] == [] for record in records
     )
     assert any(
-        len(record["crt_76_amino_acid_states"]) == 2 for record in records
+        len(record["crt_76"]) == 2 for record in records
     )
-    genotype_fields = [
-        name
-        for name, definition in manifest["fields"].items()
-        if definition["role"] == "reference_value"
-        and name.endswith(("_amino_acid_states", "_nonsynonymous_changes"))
-    ]
+    genotype_fields = list(REAL_GENOTYPE_COLUMNS.values())
     assert len(
         {tuple(str(record[name]) for name in genotype_fields) for record in records}
     ) == 74
@@ -89,10 +85,9 @@ def test_synthetic_publisher_converts_mixtures_and_accessions(
     manifest = _read_json(output / "dataset_manifest.json")
     assert len(records) == manifest["record_count"] == 25
     by_id = {record["record_id"]: record for record in records}
-    assert by_id["Pf_Ch_crt_76_het"]["crt_76_amino_acid_states"] == ["K", "T"]
+    assert by_id["Pf_Ch_crt_76_het"]["crt_76"] == ["K", "T"]
     assert (
-        by_id["Pf_Ch_crt_76_het"]["chloroquine_resistance_classification"]
-        == "undetermined"
+        by_id["Pf_Ch_crt_76_het"]["chloroquine"] == "undetermined"
     )
 
     genomic = {
