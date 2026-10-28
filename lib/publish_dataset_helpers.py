@@ -194,7 +194,7 @@ def scalar_field(
     description: str,
     logical_type: str,
     *,
-    allowed_values: Sequence[Any] | None = None,
+    enum_values: Sequence[Any] | None = None,
 ) -> dict[str, Any]:
     """Create a required scalar field definition for a dataset manifest."""
     definition: dict[str, Any] = {
@@ -203,8 +203,8 @@ def scalar_field(
         "value_type": {"logical_type": logical_type},
         "required": True,
     }
-    if allowed_values is not None:
-        definition["allowed_values"] = list(allowed_values)
+    if enum_values is not None:
+        definition["constraints"] = {"enum": list(enum_values)}
     return definition
 
 
@@ -320,8 +320,9 @@ def validate_bundle(
                     raise ConversionError(
                         f"Record {record_id!r} field {name!r} has the wrong type"
                     )
-                allowed = definition.get("allowed_values")
-                if allowed is not None and value not in allowed:
+                constraints = definition.get("constraints")
+                enum_values = constraints.get("enum") if constraints else None
+                if enum_values is not None and value not in enum_values:
                     raise ConversionError(
                         f"Record {record_id!r} field {name!r} has disallowed value "
                         f"{value!r}"

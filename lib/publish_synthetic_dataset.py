@@ -74,7 +74,7 @@ def _field_definitions() -> dict[str, dict[str, Any]]:
             f"Expected {source_name} resistance classification under the "
             "documented interpretation rules.",
             "string",
-            allowed_values=CLASSIFICATIONS,
+            enum_values=CLASSIFICATIONS,
         )
     for _, field_name in GENOTYPE_COLUMNS.items():
         gene, residue = field_name.rsplit("_", 1)

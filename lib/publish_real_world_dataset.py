@@ -106,7 +106,7 @@ def _field_definitions() -> dict[str, dict[str, Any]]:
                 "resistance classification."
             ),
             "string",
-            allowed_values=CLASSIFICATIONS,
+            enum_values=CLASSIFICATIONS,
         )
     for _, field_name in GENOTYPE_COLUMNS.items():
         if field_name == "kelch13_349_726_changes":
@@ -127,13 +127,13 @@ def _field_definitions() -> dict[str, dict[str, Any]]:
         "Country recorded in the source metadata; not a claim about "
         "representativeness or current parasite origin.",
         "string",
-        allowed_values=["Laos", "Vietnam"],
+        enum_values=["Laos", "Vietnam"],
     )
     fields["ampseq_process"] = scalar_field(
         "context",
         "GenRe Mekong AmpSeq processing version recorded for the sample.",
         "string",
-        allowed_values=["AmpSeqV1", "AmpSeqV2"],
+        enum_values=["AmpSeqV1", "AmpSeqV2"],
     )
     return fields
 
