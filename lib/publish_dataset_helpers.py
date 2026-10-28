@@ -208,19 +208,14 @@ def scalar_field(
     return definition
 
 
-def state_set_field(
-    description: str, *, empty_collection_meaning: str | None = None
-) -> dict[str, Any]:
-    """Create a required unordered amino-acid-state field definition."""
-    definition: dict[str, Any] = {
+def state_set_field(description: str) -> dict[str, Any]:
+    """Create a required unordered string-set field definition."""
+    return {
         "role": "reference_value",
         "description": description,
         "value_type": {"collection_type": "set", "element_type": "string"},
         "required": True,
     }
-    if empty_collection_meaning is not None:
-        definition["empty_collection_meaning"] = empty_collection_meaning
-    return definition
 
 
 def build_manifest(

@@ -112,11 +112,9 @@ def _field_definitions() -> dict[str, dict[str, Any]]:
         if field_name == "kelch13_349_726_changes":
             fields[field_name] = state_set_field(
                 "Concordant nonsynonymous kelch13 amino-acid changes from "
-                "residues 349 through 726; order has no meaning.",
-                empty_collection_meaning=(
-                    "No nonsynonymous change is reported in the specified "
-                    "kelch13 interval (source value WT)."
-                ),
+                "residues 349 through 726; order has no meaning. An empty set "
+                "means that no nonsynonymous change was reported in the "
+                "specified interval (source value WT)."
             )
             continue
         gene, residue = field_name.rsplit("_", 1)
